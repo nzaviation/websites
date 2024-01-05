@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Guess the Number</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        #app-container {
+            width: 400px;
+            background-color: #34495e;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #app-header {
+            background-color: #2c3e50;
+            padding: 15px;
+            font-size: 1.5em;
+        }
+
+        #game-container {
+            padding: 20px;
+        }
+
+        #guess {
+            width: calc(100% - 20px);
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        #submit-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        #message {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        .play-again-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 10%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-container">
+        <div id="app-header">
+            Guess the Number
+        </div>
+        <div id="game-container">
+            <label for="guess">Guess a number between 1 and 100:</label>
+            <br><br>
+            <input type="number" id="guess" min="1" max="100">
+            <br>
+            <button id="submit-button" onclick="checkGuess()">Submit</button>
+            <div id="message"></div>
+        </div>
+    </div>
+    <button class="play-again-button" onclick="window.location.reload();">Play Again</button>
+
+    <script>
+        const secretNumber = Math.floor(Math.random() * 100) + 1;
+
+        function checkGuess() {
+            const guessedNumber = parseInt(document.getElementById("guess").value);
+            const message = document.getElementById("message");
+
+            if (guessedNumber === secretNumber) {
+                message.innerHTML = `Congratulations! You guessed the number.`;
+            } else if (guessedNumber > secretNumber) {
+                message.innerHTML = "Too high. Try a lower number.";
+            } else {
+                message.innerHTML = "Too low. Try a higher number.";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #app-container {
+            width: 400px;
+            background-color: #34495e;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #app-header {
+            background-color: #2c3e50;
+            padding: 15px;
+            font-size: 1.5em;
+        }
+
+        #calculator-container {
+            padding: 20px;
+        }
+
+        #dateInput {
+            width: calc(100% - 20px);
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        #calculate-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<!-- ... (other code) ... -->
+
+<body>
+    <div id="app-container">
+        <div id="app-header">
+            Age Calculator
+        </div>
+        <div id="calculator-container">
+            <input type="date" id="dateInput" placeholder="Select your date of birth" required>
+            <!-- Change the onclick attribute to match the function name -->
+            <button id="calculate-button" onclick="calculateAge()">Calculate</button>
+            <h3>Result:</h3>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("dateInput");
+        dateInput.max = new Date().toISOString().split("T")[0];
+
+        const result = document.getElementById("result");
+        const calculateButton = document.getElementById("calculate-button");
+
+        calculateButton.addEventListener("click", function () {
+            calculateAge();
+        });
+
+        function calculateAge() {
+            const birthDate = new Date(dateInput.value);
+            const today = new Date();
+
+            if (isNaN(birthDate)) {
+                result.innerHTML = "Please enter a valid date.";
+                return;
+            }
+
+            const diffTime = Math.abs(today - birthDate);
+            const age = new Date(diffTime);
+
+            const years = age.getUTCFullYear() - 1970;
+            const months = age.getUTCMonth();
+            const days = age.getUTCDate() - 1;
+
+            result.innerHTML = `You are <span>${years}</span> years, <span>${months}</span> months, and <span>${days}</span> days old`;
+        }
+    });
+</script>
+
+</body>
+</html>
