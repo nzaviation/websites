@@ -1,79 +1,178 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error 404 - Page Not Found</title>
+    <title>Websites | nz__aviation's website</title>
+    <link rel="icon" href="images/Logo.JPG" type="image/x-icon">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #3498db;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+    * {
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            background-color: #444;
-            padding: 50px;
-            border-radius: 30px;
-            text-align: center;
-            margin-top: 20px;
-        }
+body {
+    min-height: 100vh;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    background-image: url(images/Background.JPG);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    color: yellow;
+}
 
-        h1 {
-            font-size: 8em;
-            margin: 0;
-            letter-spacing: -5px;
-            line-height: 0.8em;
-        }
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    text-align: center;
+}
 
-        p {
-            font-size: 1.5em;
-            margin: 10px 0;
-        }
+nav {
+    background-color: white;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+}
 
-        @keyframes swing {
-            0% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(10deg);
-            }
-            50% {
-                transform: rotate(-10deg);
-            }
-            75% {
-                transform: rotate(5deg);
-            }
-            100% {
-                transform: rotate(0deg);
-            }
-        }
+nav ul {
+    width: 100%;
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+}
+nav li {
+    height: 50px;
+}
 
-        h1 {
-            animation: swing 2s ease-in-out infinite;
-        }
+nav a {
+    height: 100%;
+    padding: 0 30px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: black;
+}
 
-        @media screen and (max-width: 600px) {
-            h1 {
-                font-size: 5em;
-            }
+nav a:hover {
+    color: blue;
+}
 
-            p {
-                font-size: 1.2em;
-            }
-        }
+nav li:first-child {
+    margin-right: auto;
+}
 
-        .button {
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 250px;
+    z-index: 999;
+    background-color: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    box-shadow: -10 0 10 rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.sidebar li {
+    width: 100%;
+}
+
+.sidebar a {
+    width: 100%
+}
+
+.menu-button {
+    display: none;
+}
+
+@media(max-width: 800px) {
+    .hideOnMobile {
+        display: none;
+    }
+    .menu-button {
+        display: block;
+    }
+}
+
+@media(max-width: 400px) {
+    .sidebar {
+        width: 100%;
+    }
+}
+
+main {
+    padding: 1em;
+}
+
+.text-box {
+    padding: 20px;
+    border-radius: 20px;
+    background-color: grey;
+    color: yellow;
+    text-align: center;
+    margin: 10px;
+}
+
+section {
+    margin-bottom: 1em;
+}
+
+footer {
+    background-color: white;
+    color: black;
+    padding: 1em;
+    text-align: center;
+}
+
+#notification-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%);
+    background-color: #3498db;
+    color: white;
+    padding: 13px;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fadeInOut 5s ease-out;
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 1;
+    }
+}
+
+#close-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.button {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #3498db;
+            background-color: #18E3E6;
             color: #4A4F54;
             text-decoration: none;
             border: none;
@@ -84,13 +183,70 @@
         .button:hover {
             background-color: #0056b3;
         }
-    </style>
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>404</h1>
-        <p>Page Not Found</p><br>
-        <a href="https://www.nz-aviation.com" class="button">Home</a>
-    </div>
+    <nav>
+        <ul class="sidebar">
+            <li onclick=hideSidebar()><a href=""><h1><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 -960 960 960" width="26"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg></h1></a></li>
+            <li class="hideOnMobile"><a href="/age">Age Calculator</a></li>
+            <li class="hideOnMobile"><a href="/gtn">Guess the Number</a></li>
+            <li class="hideOnMobile"><a href="/cal">Calculator</a></li>
+            <li class="hideOnMobile"><a href="/ucc">Currency Converter</a></li>
+            <li class="hideOnMobile"><a href="/pac">TT Phonetic Alphabet</a></li>
+        </ul>
+        <ul>
+            <li><a href="https://www.nz-aviation.com"><h3>Back to Home</h3></a></li>
+            <li class="hideOnMobile"><a href="/age">Age Calculator</a></li>
+            <li class="hideOnMobile"><a href="/gtn">Guess the Number</a></li>
+            <li class="hideOnMobile"><a href="/cal">Calculator</a></li>
+            <li class="hideOnMobile"><a href="/ucc">Currency Converter</a></li>
+            <li class="hideOnMobile"><a href="/pac">TT Phonetic Alphabet</a></li>
+            <li class="menu-button" onclick=showSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 -960 960 960" width="26"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></svg></svg></svg></a></li>
+        </ul>        
+    </nav>
+
+    <main>
+        <div class="text-box">
+            <h2>Websites:</h2>
+            <h4>If I ever get bored or have nothing to do, I code some random websites and/or tools (some with the help of friends!)</h4>
+            <h4>Here you can check out my other websites and tools!</h4>
+        </div>
+
+        <section>
+            <br>
+            <a href="/age" class="button">Age Calculator</a><br><br>
+            <a href="/gtn" class="button">Guess the Number Game</a><br><br>
+            <a href="/cal" class="button">Advanced Calculator</a><br><br>
+            <a href="/ucc" class="button">Ultimate Currency Converter</a><br><br>
+            <a href="/pac" class="button">Text to Phonetic Converter</a><br><br>
+            <a href="https://www.nz-aviation.com/login" class="button">Coming Soon!</a><br><br>
+            <a href="https://www.nz-aviation.com/login" class="button">Coming Soon!</a>
+            <br><br><br><br><br>
+        </section>
+
+        <div class="text-box">
+            <h1>Please review my website here!</h1><br>
+            <div data-tf-live="01HKCH9VN9K6VW22J7EX7Q9VXM"></div><script src="//embed.typeform.com/next/embed.js"></script>
+        </div>
+        <br><br><br><br>
+    </main>
+
+    <footer>
+        <h3>&copy; 2024 nz__aviation. All rights reserved. | <a href="https://help.nz-aviation.com/terms">Terms of Use</a></h3>
+        <a href="https://nzaviation.github.io/web/">Old Website (Not Updated!)</a>
+    </footer>
+
+    <script>
+        function showSidebar(){
+            const sidebar = document.querySelector('.sidebar')
+            sidebar.style.display = 'flex'
+        }
+
+        function hideSidebar(){
+            const sidebar = document.querySelector('.sidebar')
+            sidebar.style.display = 'none'
+        }
+    </script>
 </body>
 </html>
