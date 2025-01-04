@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #1e1e1e;
+            color: #FFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 1000px;
+            margin: 20px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: scale(0.9);}
+            to {opacity: 1; transform: scale(1);}
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #FFF;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+            letter-spacing: 1.5px;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .btn {
+            margin: 10px;
+            padding: 20px 50px;
+            border: none;
+            outline: none;
+            color: #FFF;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 15px;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn::after {
+            content: "";
+            z-index: -1;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+            left: 0;
+            top: 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn::before {
+            content: "";
+            background: linear-gradient(
+                45deg,
+                #FF0000, #FF7300, #FFFB00, #48FF00,
+                #00FFD5, #002BFF, #FF00C8, #FF0000
+            );
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            background-size: 600%;
+            z-index: -1;
+            width: calc(100% + 6px);
+            height: calc(100% + 6px);
+            filter: blur(10px);
+            animation: glowing 12s linear infinite;
+            transition: opacity 0.3s ease-in-out;
+            border-radius: 12px;
+            opacity: 0;
+        }
+
+        @keyframes glowing {
+            0% {background-position: 0 0;}
+            50% {background-position: 400% 0;}
+            100% {background-position: 0 0;}
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:active:after {
+            background: transparent;
+        }
+
+        .btn:active {
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 255, 213, 0.5);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            text-align: center;
+            letter-spacing: 0.5px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        footer a {
+            color: #00FFD5;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+            width: 80px;
+            height: 80px;
+            background: url('/Logo.jpg') no-repeat center;
+            background-size: contain;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                padding: 15px 35px;
+                font-size: 1em;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="container">
+        <div class="logo"></div>
+        <h1>My Projects</h1>
+        <div class="btn-container">
+            <a href="https://nz-aviation.com" target="_blank" class="btn">NZ Aviation</a>
+            <a href="https://example.com/calculator" target="_blank" class="btn">Modern Calculator</a>
+            <a href="https://example.com/guess-the-number" target="_blank" class="btn">Guess the Number</a>
+            <a href="https://example.com/password-generator" target="_blank" class="btn">Password Generator</a>
+            <a href="https://example.com/time-calculator" target="_blank" class="btn">Time Calculator</a>
+            <a href="https://example.com/todo-app" target="_blank" class="btn">To-Do App</a>
+            <a href="https://example.com/logbook-generator" target="_blank" class="btn">Logbook Generator</a>
+            <a href="https://example.com/phonetic-converter" target="_blank" class="btn">Phonetic Converter</a>
+        </div>
+        <footer>
+            &copy; 2022 - <span id="year"></span> <a href="#">Jack Palmer</a>. All rights reserved.
+        </footer>
+    </div>
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        class Particle {
+            constructor(x, y, size, color, weight) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = color;
+                this.weight = weight;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.weight += 0.02;
+                this.y += this.weight;
+                this.x += (Math.random() * 2 - 1);
+
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.size;
+                    this.weight = Math.random() * 2;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < 100; i++) {
+                const size = Math.random() * 3 + 1;
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const color = 'rgba(255,255,255,0.8)';
+                const weight = 1;
+                particlesArray.push(new Particle(x, y, size, color, weight));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
