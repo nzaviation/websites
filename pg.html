@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator | JP Portfolio</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #2b5876, #4e4376);
+      color: #fff;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 500px;
+      padding: 40px;
+      background: rgba(30, 30, 30, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      color: #ffcc00;
+      font-size: 2em;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    #password {
+      margin: 20px auto;
+      padding: 12px;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #444;
+      color: #fff;
+      outline: none;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .copy-button {
+      background: #ff4b2b;
+    }
+
+    .generate-button {
+      background: #36d1dc; 
+    }
+
+    .toggle-visibility-button {
+      background: #555;
+    }
+
+    .button:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .options {
+      margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .option label {
+      padding: 8px 12px;
+      font-size: 0.9em;
+      background-color: #555;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #fff;
+      display: inline-block;
+      text-align: center;
+      margin: 5px;
+    }
+
+    .option input[type="checkbox"] {
+      display: none;
+    }
+
+    .option input[type="checkbox"]:checked + label {
+      background: #4bd617;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    #passwordLength {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .strength-container {
+      margin-top: 15px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .strength-bar {
+      height: 8px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+
+    .strength-bar div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+      transition: width 0.3s ease;
+    }
+
+    .strength-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 0.8em;
+      color: #ccc;
+    }
+
+    .back-button {
+      background: #6a11cb;
+    }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #444;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      font-size: 0.9em;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Password Generator</h1>
+    <div>
+      <input type="text" id="password" readonly aria-label="Generated password" title="Click to Copy Password" onclick="copyPassword()">
+      <button class="button toggle-visibility-button" id="toggleVisibilityButton" onclick="togglePasswordVisibility()">Show</button>
+    </div>
+    <div class="options">
+      <div class="option">
+        <input type="checkbox" id="includeUppercase">
+        <label for="includeUppercase">Uppercase Letters</label>
+      </div>
+      <div class="option">
+        <input type="checkbox" id="includeNumbers">
+        <label for="includeNumbers">Numbers</label>
+      </div>
+      <div class="option">
+        <input type="checkbox" id="includeSpecialCharacters">
+        <label for="includeSpecialCharacters">Special Characters</label>
+      </div>
+    </div>
+    <label>Password Length: <span id="lengthValue">12</span></label>
+    <input type="range" id="passwordLength" min="3" max="30" value="12" aria-labelledby="lengthLabel">
+    <br><br>
+    <button class="button generate-button" onclick="generatePassword()"><b>Generate Password</b></button>
+    <button class="button copy-button" id="copyButton" onclick="copyPassword()"><b>Copy Password</b></button>
+    <div class="strength-container">
+        <div class="strength-bar">
+          <div id="strengthBar"></div>
+        </div>
+        <div class="strength-labels">
+          <span>Weak</span>
+          <span>Moderate</span>
+          <span>Strong</span>
+        </div>
+    </div><br>
+    <button class="button back-button" onclick="window.location.href='https://www.nz-aviation.com/websites'">Back to Websites</button>  
+  </div>
+  
+  <div id="copyNotification" class="copy-notification">Password copied to clipboard!</div>
+
+  <script>
+    const passwordInput = document.getElementById("password");
+    const copyNotification = document.getElementById("copyNotification");
+    const includeUppercaseCheckbox = document.getElementById("includeUppercase");
+    const includeNumbersCheckbox = document.getElementById("includeNumbers");
+    const includeSpecialCharactersCheckbox = document.getElementById("includeSpecialCharacters");
+    const passwordLengthRange = document.getElementById("passwordLength");
+    const lengthValue = document.getElementById("lengthValue");
+    const strengthBar = document.getElementById("strengthBar");
+    const toggleVisibilityButton = document.getElementById("toggleVisibilityButton");
+
+    function copyPassword() {
+      navigator.clipboard.writeText(passwordInput.value).then(() => {
+        showCopyNotification();
+      });
+    }
+
+    function showCopyNotification() {
+      copyNotification.classList.add("show");
+      setTimeout(() => copyNotification.classList.remove("show"), 2000);
+    }
+
+    function generatePassword() {
+      const length = passwordLengthRange.value;
+      const includeUppercase = includeUppercaseCheckbox.checked;
+      const includeNumbers = includeNumbersCheckbox.checked;
+      const includeSpecialCharacters = includeSpecialCharactersCheckbox.checked;
+
+      let charset = "abcdefghijklmnopqrstuvwxyz";
+      if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      if (includeNumbers) charset += "0123456789";
+      if (includeSpecialCharacters) charset += "!@#$%^&*()-_=+";
+
+      let password = Array.from({ length }, () => charset[Math.floor(Math.random() * charset.length)]).join('');
+      passwordInput.value = password;
+      updatePasswordStrength(password);
+    }
+
+    function updatePasswordStrength(password) {
+      let score = calculatePasswordStrength(password);
+      strengthBar.style.width = score + "%";
+      strengthBar.style.background = score < 20 ? "#ff4b2b" : score < 50 ? "#ffcc00" : score < 70 ? "#36d1dc" : score < 100 ? "#f203ff" : "#4bd617";
+    }
+
+    function calculatePasswordStrength(password) {
+      let score = 0;
+      if (!password) return score;
+
+      const letters = {};
+      password.split("").forEach(char => {
+        letters[char] = (letters[char] || 0) + 1;
+        score += 5.0 / letters[char];
+      });
+
+      const variations = {
+        digits: /\d/.test(password),
+        lower: /[a-z]/.test(password),
+        upper: /[A-Z]/.test(password),
+        nonWords: /\W/.test(password),
+      };
+
+      const variationCount = Object.values(variations).filter(Boolean).length;
+      score += (variationCount - 1) * 10;
+
+      return Math.min(Math.round(score), 100);
+    }
+
+    passwordLengthRange.addEventListener("input", () => {
+      lengthValue.textContent = passwordLengthRange.value;
+    });
+
+    function togglePasswordVisibility() {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      toggleVisibilityButton.textContent = type === "password" ? "Show" : "Hide";
+    }
+  </script>
+</body>
+</html>

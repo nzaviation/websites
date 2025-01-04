@@ -1,0 +1,180 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phonetic Alphabet Converter | JP Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            color: #ffcc00;
+            font-size: 2em;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 20px 0;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #444;
+            color: #fff;
+            resize: none;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #36d1dc;
+            box-shadow: 0 0 8px rgba(54, 209, 220, 0.6);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-button {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+        }
+
+        .clear-button {
+            background: #888;
+        }
+
+        .output-container {
+            margin-top: 15px;
+            font-size: 1.1em;
+            background: #333;
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            opacity: 0;
+            font-size: 0.9em;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            text-align: center;
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Phonetic Alphabet Converter</h1>
+        <textarea id="textInput" placeholder="Type text here..."></textarea>
+        <div class="button-group">
+            <button class="button copy-button" onclick="copyPhonetic()">Copy</button>
+            <button class="button clear-button" onclick="clearFields()">Clear</button>
+        </div>
+        <div id="natoOutput" class="output-container" aria-live="polite">Your converted text will appear here...</div>
+    </div>
+    <div id="copyNotification" class="copy-notification">Copied to clipboard!</div>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const natoOutput = document.getElementById('natoOutput');
+        const copyNotification = document.getElementById('copyNotification');
+
+        let debounceTimeout;
+        
+        textInput.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(convertToPhonetic, 300);
+        });
+
+        function convertToPhonetic() {
+            const natoMapping = {
+                'a': 'Alpha', 'b': 'Bravo', 'c': 'Charlie', 'd': 'Delta', 'e': 'Echo',
+                'f': 'Foxtrot', 'g': 'Golf', 'h': 'Hotel', 'i': 'India', 'j': 'Juliet',
+                'k': 'Kilo', 'l': 'Lima', 'm': 'Mike', 'n': 'November', 'o': 'Oscar',
+                'p': 'Papa', 'q': 'Quebec', 'r': 'Romeo', 's': 'Sierra', 't': 'Tango',
+                'u': 'Uniform', 'v': 'Victor', 'w': 'Whiskey', 'x': 'X-Ray', 'y': 'Yankee', 'z': 'Zulu'
+            };
+            const inputText = textInput.value.toLowerCase();
+            const natoText = inputText.split('').map(char => natoMapping[char] || char).join(' ');
+            natoOutput.textContent = natoText || "Your converted text will appear here...";
+        }
+
+        function copyPhonetic() {
+            const outputText = natoOutput.textContent;
+            navigator.clipboard.writeText(outputText).then(showCopyNotification);
+        }
+
+        function showCopyNotification() {
+            copyNotification.classList.add('show');
+            setTimeout(() => copyNotification.classList.remove('show'), 2000);
+        }
+
+        function clearFields() {
+            textInput.value = '';
+            natoOutput.textContent = "Your converted text will appear here...";
+        }
+    </script>
+</body>
+</html>

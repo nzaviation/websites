@@ -1,0 +1,16 @@
+{
+    "name": "JP Portfolio Projects",
+    "short_name": "JPP Projects",
+    "icons": [
+      {
+        "src": "websites/Logo.jpg",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/websites",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff"
+  }

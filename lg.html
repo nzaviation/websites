@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logbook Generator | JP Portfolio</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="manifest" href="/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 45%;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: #74ebd5;
+            outline: none;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+        }
+
+        .validation-message {
+            font-size: 0.9rem;
+            color: red;
+            display: none;
+        }
+
+        button {
+            padding: 0.8rem;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            align-self: center;
+            width: 50%;
+            max-width: 200px;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .output-container {
+            position: relative;
+        }
+
+        .output {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            margin-bottom: 1rem;
+        }
+
+        .output-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .output-actions button {
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dark-mode-toggle.dark {
+            background: #333;
+            border-color: #555;
+            color: #fff;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: rotate(20deg);
+        }
+
+        /* Mobile and Tablet Styles */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            input, button {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: linear-gradient(to right, #141e30, #243b55);
+            color: #fff;
+        }
+
+        body.dark .container {
+            background: #1e1e1e;
+            color: #ccc;
+        }
+
+        body.dark input {
+            background: #333;
+            border-color: #555;
+            color: #fff;
+        }
+
+        body.dark .output {
+            background: #292929;
+            border-color: #444;
+        }
+
+        body.dark button {
+            background: #555;
+        }
+
+        body.dark button:hover {
+            background: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="dark-mode-toggle" id="darkModeToggle">&#9790;</div>
+        <h1>Logbook Generator</h1>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="flightNumber">Flight Number</label>
+                <input type="text" id="flightNumber" placeholder="Enter flight number" required>
+                <div class="validation-message" id="flightNumberValidation">Flight number is required.</div>
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" required>
+                <div class="validation-message" id="dateValidation">Date is required.</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="aircraft">Aircraft</label>
+                <input type="text" id="aircraft" placeholder="Enter aircraft (e.g., ZK-MAJ)" oninput="updateAircraftPrefix()">
+                <div class="validation-message" id="aircraftValidation">Aircraft is required.</div>
+            </div>
+            <div class="form-group">
+                <label for="time">Flight Time (Hours)</label>
+                <input type="number" id="time" placeholder="Enter flight time" step="0.1" required>
+                <div class="validation-message" id="timeValidation">Flight time is required.</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description">Flight Description</label>
+            <input type="text" id="description" placeholder="Enter flight description" required>
+            <div class="validation-message" id="descriptionValidation">Flight description is required.</div>
+        </div>
+        <button id="generate">Generate Entry</button>
+        <div class="output-container">
+            <div class="output" id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark');
+            darkModeToggle.classList.add('dark');
+            darkModeToggle.innerHTML = '&#9728;';
+        } else {
+            body.classList.remove('dark');
+            darkModeToggle.classList.remove('dark');
+            darkModeToggle.innerHTML = '&#9790;';
+        }
+      }
+
+        darkModeToggle.addEventListener('click', () => {
+            const isDarkMode = body.classList.contains('dark');
+        if (isDarkMode) {
+            body.classList.remove('dark');
+            darkModeToggle.classList.remove('dark');
+            darkModeToggle.innerHTML = '&#9790;';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.classList.add('dark');
+            darkModeToggle.classList.add('dark');
+            darkModeToggle.innerHTML = '&#9728;';
+            localStorage.setItem('theme', 'dark');
+        }
+      });
+
+    applySavedTheme();
+
+        document.getElementById('generate').addEventListener('click', () => {
+            const flightNumber = document.getElementById('flightNumber').value.trim();
+            const date = document.getElementById('date').value;
+            const aircraft = document.getElementById('aircraft').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const time = parseFloat(document.getElementById('time').value.trim());
+
+            const flightNumberValidation = document.getElementById('flightNumberValidation');
+            const dateValidation = document.getElementById('dateValidation');
+            const aircraftValidation = document.getElementById('aircraftValidation');
+            const descriptionValidation = document.getElementById('descriptionValidation');
+            const timeValidation = document.getElementById('timeValidation');
+
+            flightNumberValidation.style.display = flightNumber ? 'none' : 'block';
+            dateValidation.style.display = date ? 'none' : 'block';
+            aircraftValidation.style.display = aircraft ? 'none' : 'block';
+            descriptionValidation.style.display = description ? 'none' : 'block';
+            timeValidation.style.display = time && !isNaN(time) ? 'none' : 'block';
+
+            if (!flightNumber || !date || !aircraft || !description || isNaN(time)) {
+                return;
+            }
+
+            const formattedDate = new Date(date).toLocaleDateString('en-GB').replaceAll('/', '.');
+            const formattedTime = time.toFixed(1);
+            const output = `[${flightNumber}] ${formattedDate} ${aircraft} ~ ${description} (${formattedTime} hrs)`;
+
+            const outputElement = document.getElementById('output');
+            outputElement.textContent = output;
+        });
+    </script>
+</body>
+
+</html>

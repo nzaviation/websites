@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Since Calculator | JP Portfolio</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="manifest" href="/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at center, #74ebd5, #9face6);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            animation: slideIn 0.6s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            outline: none;
+            background: #fff;
+        }
+
+        .input-field:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        .error {
+            color: #ff4d4d;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            background: #f3f4f6;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 18px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+        }
+
+        #calculate-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #calculate-button:hover {
+            background-color: #45a049;
+        }
+
+        #calculate-button:active {
+            transform: scale(0.98);
+        }
+
+        #reset-button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #reset-button:hover {
+            background-color: #c0392b;
+        }
+
+        .reset-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #444;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            font-size: 0.9em;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Time Since Calculator</h1>
+        <div class="input-container">
+            <label for="dateInput">Select Date & Time:</label>
+            <input type="datetime-local" id="dateInput" class="input-field">
+            <div id="errorMsg" class="error">Please select a valid past date.</div>
+        </div>
+        <div id="result" class="result">
+            <div class="result-item"><strong>Years:</strong> <span id="years">0</span></div>
+            <div class="result-item"><strong>Months:</strong> <span id="months">0</span></div>
+            <div class="result-item"><strong>Weeks:</strong> <span id="weeks">0</span></div>
+            <div class="result-item"><strong>Days:</strong> <span id="days">0</span></div>
+            <div class="result-item"><strong>Hours:</strong> <span id="hours">0</span></div>
+            <div class="result-item"><strong>Minutes:</strong> <span id="minutes">0</span></div>
+            <div class="result-item"><strong>Seconds:</strong> <span id="seconds">0</span></div>
+        </div>
+        <button id="reset-button" onclick="resetCalculator()">Reset</button>
+    </div>
+
+    <div id="resetNotification" class="reset-notification">Application has been reset!</div>
+
+    <script>
+        let intervalId;
+    
+        function updateTimeSince() {
+            const dateInput = document.getElementById('dateInput').value;
+            const resultContainer = document.getElementById('result');
+            const errorMsg = document.getElementById('errorMsg');
+    
+            if (!dateInput) {
+                showError('Please select a valid date and time.');
+                return;
+            }
+    
+            const selectedDate = new Date(dateInput);
+            const currentDate = new Date();
+    
+            if (selectedDate > currentDate) {
+                showError('Please select a past date.');
+                return;
+            }
+    
+            errorMsg.style.display = 'none';
+    
+            let diffInMs = currentDate - selectedDate;
+    
+            const years = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 365.25));
+            diffInMs %= (1000 * 60 * 60 * 24 * 365.25);
+    
+            const months = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30.44));
+            diffInMs %= (1000 * 60 * 60 * 24 * 30.44);
+    
+            const weeks = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
+            diffInMs %= (1000 * 60 * 60 * 24 * 7);
+    
+            const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+            diffInMs %= (1000 * 60 * 60 * 24);
+    
+            const hours = Math.floor(diffInMs / (1000 * 60 * 60));
+            diffInMs %= (1000 * 60 * 60);
+    
+            const minutes = Math.floor(diffInMs / (1000 * 60));
+            diffInMs %= (1000 * 60);
+    
+            const seconds = Math.floor(diffInMs / 1000);
+    
+            displayResults({ years, months, weeks, days, hours, minutes, seconds });
+        }
+    
+        function showResetNotification() {
+            const resetNotification = document.getElementById('resetNotification');
+            resetNotification.style.opacity = '1';
+            setTimeout(() => {
+                resetNotification.style.opacity = '0';
+            }, 3000);
+        }
+    
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        }
+    
+        function displayResults(data) {
+            for (const [key, value] of Object.entries(data)) {
+                document.getElementById(key).textContent = value.toLocaleString();
+            }
+            document.getElementById('result').style.display = 'block';
+    
+            const resultItems = document.querySelectorAll('.result-item');
+            resultItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            });
+        }
+    
+        function resetCalculator() {
+            document.getElementById('dateInput').value = '';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+            clearInterval(intervalId);
+            document.getElementById('years').textContent = '0';
+            document.getElementById('months').textContent = '0';
+            document.getElementById('weeks').textContent = '0';
+            document.getElementById('days').textContent = '0';
+            document.getElementById('hours').textContent = '0';
+            document.getElementById('minutes').textContent = '0';
+            document.getElementById('seconds').textContent = '0';
+            showResetNotification();
+        }
+    
+        document.getElementById('dateInput').addEventListener('input', () => {
+            clearInterval(intervalId);
+            updateTimeSince();
+            intervalId = setInterval(updateTimeSince, 1000);
+        });
+    </script>
+</body>
+</html>

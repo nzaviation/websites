@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator | JP Portfolio</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #calculator {
+            background-color: #34495e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            width: 400px;
+            margin: auto;
+        }
+
+        #display {
+            width: 100%;
+            padding: 20px;
+            font-size: 2em;
+            border: none;
+            color: #fff;
+            background-color: #2c3e50;
+            text-align: center;
+            outline: none;
+        }
+
+        #buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 20px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.5em;
+            border: none;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button.operator {
+            background-color: #e44d26;
+        }
+
+        button.operator:hover {
+            background-color: #ff6f4d;
+        }
+
+        button.double {
+            grid-column: span 2;
+        }
+
+        #button-container {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            padding: 20px;
+        }
+
+        #redirect-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        #redirect-button:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    
+<div id="calculator">
+    <input type="text" id="display" readonly>
+    <div id="buttons">
+    <button onclick="clearDisplay()" class="operator">C</button>
+        <button onclick="deleteCharacter()" class="operator">DEL</button>
+        <button onclick="appendCharacter('/')" class="operator">÷</button>
+        <button onclick="appendCharacter('*')" class="operator">×</button>
+
+        <button onclick="appendCharacter('7')">7</button>
+        <button onclick="appendCharacter('8')">8</button>
+        <button onclick="appendCharacter('9')">9</button>
+        <button onclick="appendCharacter('-')" class="operator">-</button>
+
+        <button onclick="appendCharacter('4')">4</button>
+        <button onclick="appendCharacter('5')">5</button>
+        <button onclick="appendCharacter('6')">6</button>
+        <button onclick="appendCharacter('+')" class="operator">+</button>
+
+        <button onclick="appendCharacter('1')">1</button>
+        <button onclick="appendCharacter('2')">2</button>
+        <button onclick="appendCharacter('3')">3</button>
+        <button onclick="calculate()" class="operator double">=</button>
+
+        <button onclick="appendCharacter('0')">0</button>
+        <button onclick="appendCharacter('.')">.</button>
+    </div>
+</div>
+<div id="button-container">
+    <button id="redirect-button">Go to Home Page</button>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('redirect-button').addEventListener('click', redirectToHomePage);
+});
+
+function redirectToHomePage() {
+    window.location.href = "https://nz-aviation.com";
+}
+
+    function clearDisplay() {
+        document.getElementById('display').value = '';
+    }
+
+    function appendCharacter(character) {
+        document.getElementById('display').value += character;
+    }
+
+    function deleteCharacter() {
+        let currentValue = document.getElementById('display').value;
+        document.getElementById('display').value = currentValue.slice(0, -1);
+    }
+
+    function calculate() {
+        try {
+            document.getElementById('display').value = eval(document.getElementById('display').value);
+        } catch (error) {
+            document.getElementById('display').value = 'Error';
+        }
+    }
+</script>
+
+</body>
+</html>
