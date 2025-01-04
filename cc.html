@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Currency Converter | JP Portfolio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="/websites/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/websites/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/websites/favicon-16x16.png">
-  <link rel="manifest" href="/websites/manifest.json">
   <style>
     * {
       margin: 0;
@@ -18,7 +14,7 @@
 
     body {
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      background: linear-gradient(135deg, #3a6186, #89253e);
       color: #fff;
       display: flex;
       justify-content: center;
@@ -42,13 +38,46 @@
       text-align: center;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      animation: fadeIn 1s ease;
+      transform: scale(0.95);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    #app-container:hover {
+      transform: scale(1);
+      box-shadow: 0 6px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     #app-header {
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 20px;
+      animation: bounceIn 1s ease;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .input-group {
@@ -59,20 +88,23 @@
     input, select {
       width: 100%;
       padding: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.2);
       font-size: 1rem;
+      color: #fff;
       transition: all 0.3s ease;
     }
 
-    input[type="number"]:focus, select:focus {
+    input:focus, select:focus {
       outline: none;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     select {
-      color: #000;
+      appearance: none;
     }
 
     select option {
@@ -86,7 +118,7 @@
     }
 
     .button-group button {
-      width: 48%;
+      flex: 1;
       padding: 15px;
       background: #4caf50;
       border: none;
@@ -99,13 +131,27 @@
 
     .button-group button:hover {
       background: #45a049;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
-    
+
     #result {
       margin-top: 20px;
       font-size: 1.5rem;
       font-weight: bold;
       color: #ffd700;
+      animation: popIn 0.5s ease;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     #loading-indicator {
@@ -122,6 +168,18 @@
       text-align: left;
       max-height: 200px;
       overflow-y: auto;
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     #history ul {
@@ -146,23 +204,21 @@
 
     #dark-mode-button:hover {
       background: #fff;
-      color: #2a5298;
+      color: #89253e;
+      transform: translateY(-2px);
     }
 
-    i {
-      color: #f39c12;
-      font-size: 2rem;
-      margin: 20px 0;
-      animation: bounce 1s infinite;
+    .currency-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.6);
+      transition: color 0.3s ease;
     }
 
-    @keyframes bounce {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
+    .currency-icon:hover {
+      color: #ffd700;
     }
 
     @media (max-width: 768px) {
@@ -170,6 +226,7 @@
         padding: 20px;
       }
       .button-group button {
+        flex: none;
         width: 100%;
         margin-bottom: 10px;
       }
@@ -181,9 +238,11 @@
     <div id="app-header">Currency Converter</div>
     <div class="input-group">
       <input type="number" id="amount-input" placeholder="Enter amount..." />
+      <i class="fas fa-money-bill-wave currency-icon"></i>
     </div>
     <div class="input-group">
       <select id="from-currency"></select>
+      <i class="fas fa-arrow-right currency-icon"></i>
     </div>
     <div class="input-group">
       <select id="to-currency"></select>
@@ -201,25 +260,53 @@
   </div>
 
   <script>
-    let darkModeEnabled = false;
-    let history = [];
+    let darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+    let history = JSON.parse(localStorage.getItem('conversionHistory')) || [];
 
     document.addEventListener('DOMContentLoaded', function() {
       fetchCurrencies();
+      updateHistory();
+      if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+      }
     });
 
     function toggleDarkMode() {
       darkModeEnabled = !darkModeEnabled;
       document.body.classList.toggle('dark-mode', darkModeEnabled);
+      localStorage.setItem('darkMode', darkModeEnabled);
     }
 
     async function fetchCurrencies() {
       try {
         const response = await fetch('https://open.er-api.com/v6/latest');
+
+        if (!response.ok) {
+          handleHttpError(response.status);
+          return;
+        }
+
         const data = await response.json();
         populateCurrencyOptions(data.rates);
       } catch (error) {
-        console.error('Failed to fetch currencies:', error);
+        alert('An error occurred while fetching currency data. Please try again later.');
+        console.error('Error fetching currencies:', error);
+      }
+    }
+
+    function handleHttpError(status) {
+      switch (status) {
+        case 400:
+          alert('Bad Request. Please check your input.');
+          break;
+        case 404:
+          alert('Currency data not found. Please try again later.');
+          break;
+        case 500:
+          alert('Server error. Please try again later.');
+          break;
+        default:
+          alert('Unexpected error. Please try again.');
       }
     }
 
@@ -242,6 +329,12 @@
 
       try {
         const response = await fetch('https://open.er-api.com/v6/latest');
+
+        if (!response.ok) {
+          handleHttpError(response.status);
+          return;
+        }
+
         const data = await response.json();
         const result = (amount * (data.rates[toCurrency] / data.rates[fromCurrency])).toFixed(2);
         document.getElementById('result').textContent = `${amount} ${fromCurrency} = ${result} ${toCurrency}`;
@@ -249,6 +342,7 @@
         updateHistory();
       } catch (error) {
         alert('Failed to convert currency. Please try again later.');
+        console.error('Error converting currency:', error);
       }
     }
 
