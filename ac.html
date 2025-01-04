@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator | nz-aviation.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #333;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #app-container {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #app-header {
+            background-color: #2575fc;
+            padding: 20px;
+            font-size: 1.8em;
+            color: #fff;
+            border-bottom: 2px solid #6a11cb;
+        }
+
+        #calculator-container {
+            padding: 30px 20px;
+        }
+
+        #dateInput {
+            width: calc(100% - 40px);
+            padding: 15px;
+            border: 2px solid #2575fc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+
+        #calculate-button {
+            background-color: #6a11cb;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        #calculate-button:hover {
+            background-color: #2575fc;
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #button-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="app-container">
+        <div id="app-header">
+            Age Calculator
+        </div>
+        <div id="calculator-container">
+            <input type="date" id="dateInput" placeholder="Select your date of birth" required>
+            <button id="calculate-button" onclick="calculateAge()">Calculate</button>
+            <h3>Result:</h3>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dateInput = document.getElementById("dateInput");
+            dateInput.max = new Date().toISOString().split("T")[0];
+
+            const result = document.getElementById("result");
+            const calculateButton = document.getElementById("calculate-button");
+
+            calculateButton.addEventListener("click", function () {
+                calculateAge();
+            });
+
+            function calculateAge() {
+                const birthDate = new Date(dateInput.value);
+                const today = new Date();
+
+                if (isNaN(birthDate)) {
+                    result.innerHTML = "Please enter a valid date.";
+                    return;
+                }
+
+                const diffTime = Math.abs(today - birthDate);
+                const age = new Date(diffTime);
+
+                const years = age.getUTCFullYear() - 1970;
+                const months = age.getUTCMonth();
+                const days = age.getUTCDate() - 1;
+                const weeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+                const hours = Math.floor(diffTime / (1000 * 60 * 60));
+                const seconds = Math.floor(diffTime / 1000);
+
+                result.innerHTML = `
+                    🎉 You are <strong>${years}</strong> years, <strong>${months}</strong> months, 
+                    <strong>${days}</strong> days old!<br>
+                    That's also approximately:<br>
+                    <strong>${weeks}</strong> weeks, <strong>${hours}</strong> hours, 
+                    or <strong>${seconds}</strong> seconds! 🎉
+                `;
+            }
+        });
+    </script>
+
+</body>
+</html>
