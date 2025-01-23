@@ -312,7 +312,7 @@
 
             const formattedDate = new Date(date).toLocaleDateString('en-GB').replaceAll('/', '.');
             const formattedTime = time.toFixed(1);
-            const output = `[${flightNumber}] ${formattedDate} ${aircraft} ~ ${description} (${formattedTime} hrs)`;
+            const output = `[${flightNumber}] ${formattedDate} ${aircraft} ~ ${description} (${formattedTime})`;
 
             const outputElement = document.getElementById('output');
             outputElement.textContent = output;
