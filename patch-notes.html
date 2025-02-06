@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch Notes | JP Portfolio</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png">
+    <link rel="manifest" href="/websites/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #f5b300;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        h2 {
+            color: #f5b300;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.6rem;
+        }
+        .patch-list, .issue-list, .upcoming-list {
+            margin-top: 20px;
+            text-align: left;
+            width: 100%;
+        }
+        .patch, .issue, .upcoming {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+            border-left: 5px solid #f5b300;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+            min-height: 150px;
+            width: 90%;
+            margin-left: 5%;
+            box-sizing: border-box;
+        }
+        .patch:hover, .issue:hover, .upcoming:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-8px);
+        }
+        .patch .icon, .issue .icon, .upcoming .icon {
+            font-size: 28px;
+            color: #f5b300;
+            margin-bottom: 15px;
+        }
+        .patch a, .issue a, .upcoming a {
+            color: #f5b300;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: color 0.3s ease-in-out;
+        }
+        .patch a:hover, .issue a:hover, .upcoming a:hover {
+            color: #ffeb3b;
+        }
+        .date {
+            font-size: 13px;
+            color: #bbb;
+            margin-top: 5px;
+        }
+        .search-bar {
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #f5b300;
+            color: #f5b300;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-bar:focus {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .section-separator {
+            width: 80%;
+            border-top: 2px solid #f5b300;
+            margin: 20px auto;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Patch Notes</h1>
+            <p>Stay updated with the latest changes and improvements.</p>
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search..." oninput="debouncedSearch()">
+        </header>
+        <main>
+            <br><div class="section-separator"></div>
+            <section class="updates" id="updates">
+                <h2>Recent Updates</h2>
+                <div class="patch-list" id="patchList"></div>
+            </section>
+            <div class="section-separator"></div>
+            <section class="issues" id="issues">
+                <h2>Known Issues</h2>
+                <div class="issue-list" id="issueList"></div>
+            </section>
+            <div class="section-separator"></div>
+            <h2>Upcoming Updates</h2>
+            <div class="upcoming-list" id="upcomingList"></div>
+        </main>
+    </div>
+
+    <script>
+        const patchData = [
+            { title: 'TD Version 1.2.0', description: 'New colour pallet.', website: 'To-Do App', link: 'https://nzaviation.github.io/websites/td', date: 'Feb 6, 2025' },
+            { title: 'LG Version 1.0.0', description: 'Created & added Logbook Generator to my portfolio.', website: 'Logbook Generator', link: 'https://nzaviation.github.io/websites/lg', date: 'Jan 5, 2025' }
+        ];
+
+        const issueData = [
+            { title: 'Incorrect Link', description: '"Back To Websites" link error, old link.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Fix Expected March 2025' },
+            { title: 'Patch Notes Eyesore', description: 'Known issues on Patch Notes site, will update soon.', website: 'Patch Notes', link: 'https://nzaviation.github.io/websites/patch-notes', date: 'Fix Expected March 2025' }
+        ];
+
+        const upcomingData = [
+            { title: 'New Images on Dashboard', description: 'Adding images to the website links on the dashboard.', website: 'JP Portfolio', link: 'https://nzaviation.github.io/websites', date: 'Update Expected March 2025' },
+            { title: 'Updates to Multiple Sites', description: 'Updating multiple of the websites in my portfolio.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Update Expected April 2025' }
+        ];
+
+        function renderData(data, type) {
+            const listElement = document.getElementById(type);
+            listElement.innerHTML = '';
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add(type.slice(0, -4));
+                div.innerHTML = `
+                    <div class="icon"><i class="fas fa-${type === 'patchList' ? 'cogs' : type === 'issueList' ? 'bug' : 'calendar-alt'}"></i></div>
+                    <strong>${item.title}</strong>
+                    <p>${item.description}</p>
+                    <p><a href="${item.link}" target="_blank">${item.website}</a></p>
+                    ${item.date ? `<p class="date">${item.date}</p>` : ''}
+                `;
+                listElement.appendChild(div);
+            });
+        }
+
+        function debouncedSearch() {
+            clearTimeout(window.debounceTimeout);
+            window.debounceTimeout = setTimeout(() => {
+                searchData();
+            }, 300);
+        }
+
+        function searchData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredPatchData = patchData.filter(patch => patch.title.toLowerCase().includes(query) || patch.description.toLowerCase().includes(query));
+            const filteredIssueData = issueData.filter(issue => issue.title.toLowerCase().includes(query) || issue.description.toLowerCase().includes(query));
+            const filteredUpcomingData = upcomingData.filter(update => update.title.toLowerCase().includes(query) || update.description.toLowerCase().includes(query));
+
+            renderData(filteredPatchData, 'patchList');
+            renderData(filteredIssueData, 'issueList');
+            renderData(filteredUpcomingData, 'upcomingList');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderData(patchData, 'patchList');
+            renderData(issueData, 'issueList');
+            renderData(upcomingData, 'upcomingList');
+        });
+    </script>
+</body>
+</html>
