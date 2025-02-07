@@ -1,142 +1,666 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Calculator | JP Portfolio</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png">
-    <link rel="manifest" href="/websites/manifest.json">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: #333;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        #app-container {
-            width: 400px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            text-align: center;
-        }
-
-        #app-header {
-            background-color: #2575fc;
-            padding: 20px;
-            font-size: 1.8em;
-            color: #fff;
-            border-bottom: 2px solid #6a11cb;
-        }
-
-        #calculator-container {
-            padding: 30px 20px;
-        }
-
-        #dateInput {
-            width: calc(100% - 40px);
-            padding: 15px;
-            border: 2px solid #2575fc;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            background-color: #f7f9fc;
-            color: #333;
-        }
-
-        #calculate-button {
-            background-color: #6a11cb;
-            color: #fff;
-            border: none;
-            padding: 15px;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        #calculate-button:hover {
-            background-color: #2575fc;
-        }
-
-        #result {
-            font-size: 1.2em;
-            margin-top: 20px;
-        }
-
-        #button-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 20px;
-        }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator | JP Portfolio</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png">
+  <link rel="manifest" href="/websites/manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #2575fc;
+      --secondary-color: #6a11cb;
+      --light-bg: #f0f2f5;
+      --dark-bg: #181818;
+      --light-text: #333;
+      --dark-text: #eee;
+      --card-bg-dark: rgba(255, 255, 255, 0.85);
+      --card-bg-light: rgba(0, 0, 0, 0.75);
+      --card-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      --transition-speed: 0.3s;
+      --btn-hover-scale: 1.05;
+    }
+    body[data-theme="dark"] {
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: var(--light-text);
+    }
+    body[data-theme="light"] {
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      color: var(--dark-text);
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+    .app-container {
+      background: var(--card-bg-dark);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      transition: background var(--transition-speed);
+    }
+    body[data-theme="light"] .app-container {
+      background: var(--card-bg-light);
+    }
+    header {
+      margin-bottom: 1.5rem;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform var(--transition-speed);
+    }
+    .theme-toggle:focus {
+      outline: 2px dashed var(--primary-color);
+      outline-offset: 4px;
+    }
+    .theme-toggle:hover {
+      transform: scale(var(--btn-hover-scale));
+    }
+    main {
+      padding: 0;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    input[type="number"] {
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color var(--transition-speed);
+      width: 100%;
+    }
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+    }
+    input[type="date"] {
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color var(--transition-speed);
+      width: 100%;
+    }
+    input[type="date"]:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+    }
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    button {
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background var(--transition-speed), transform var(--transition-speed);
+    }
+    button:focus {
+      outline: 2px dashed var(--primary-color);
+      outline-offset: 4px;
+    }
+    button[type="submit"] {
+      background: var(--secondary-color);
+      color: #fff;
+      flex: 1;
+    }
+    button[type="submit"]:hover {
+      background: var(--primary-color);
+      transform: scale(var(--btn-hover-scale));
+    }
+    button#reset-button {
+      background: #ccc;
+      color: var(--light-text);
+      flex: 1;
+    }
+    button#reset-button:hover {
+      background: #bbb;
+      transform: scale(var(--btn-hover-scale));
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .result.visible {
+      opacity: 1;
+    }
+    .result ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+    }
+    .result li {
+      margin: 0.25rem 0;
+    }
+    .additional-info {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .fun-facts {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--primary-color);
+    }
+    .milestone {
+      font-size: 1rem;
+      color: var(--secondary-color);
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .progress-container {
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .progress-container label {
+      font-size: 0.9rem;
+      color: var(--primary-color);
+    }
+    .progress-bar {
+      height: 10px;
+      background-color: var(--secondary-color);
+      border-radius: 5px;
+      width: 0%;
+      transition: width 0.5s ease-in-out;
+      margin-top: 0.25rem;
+    }
+    .time-machine-container {
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .time-machine-container label {
+      font-size: 0.9rem;
+      color: var(--primary-color);
+    }
+    .time-machine-container input[type="date"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color var(--transition-speed);
+    }
+    .time-machine-container input[type="date"]:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .action-buttons button {
+      flex: 1;
+      min-width: 120px;
+    }
+    .copy-button, .share-button, .live-button, .time-machine-button, 
+    .speak-button, .print-button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background var(--transition-speed), transform var(--transition-speed);
+    }
+    .copy-button:hover, .share-button:hover, .live-button:hover, .time-machine-button:hover, 
+    .speak-button:hover, .print-button:hover {
+      background: var(--secondary-color);
+      transform: scale(var(--btn-hover-scale));
+    }
+    .copy-button:focus, .share-button:focus, .live-button:focus, .time-machine-button:focus, 
+    .speak-button:focus, .print-button:focus {
+      outline: 2px dashed var(--primary-color);
+      outline-offset: 4px;
+    }
+    .live-active {
+      border: 2px solid var(--secondary-color);
+    }
+    #chart-container {
+      margin-top: 1rem;
+      display: none;
+    }
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 1.5rem;
+      }
+      header h1 {
+        font-size: 1.75rem;
+      }
+      .result {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
-
-<body>
-    <div id="app-container">
-        <div id="app-header">
-            Age Calculator
+<body data-theme="dark">
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <h1>Age Calculator</h1>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
+    <main>
+      <form id="age-form" novalidate>
+        <label for="dateInput">Enter your Date of Birth</label>
+        <input type="date" id="dateInput" required>
+        <label for="lifeExpectancy">Enter your Life Expectancy (years, optional)</label>
+        <input type="number" id="lifeExpectancy" value="80" min="1" max="150">
+        <div class="btn-group">
+          <button type="submit">Calculate</button>
+          <button type="button" id="reset-button">Reset</button>
         </div>
-        <div id="calculator-container">
-            <input type="date" id="dateInput" placeholder="Select your date of birth" required>
-            <button id="calculate-button" onclick="calculateAge()">Calculate</button>
-            <h3>Result:</h3>
-            <div id="result"></div>
-        </div>
-    </div>
+      </form>
+      <div id="result" class="result" role="alert" aria-live="polite"></div>
+      <div class="action-buttons" id="action-buttons" style="display: none;">
+        <button id="copy-button" class="copy-button">Copy Result</button>
+        <button id="share-button" class="share-button">Share</button>
+        <button id="live-button" class="live-button">Start Live Update</button>
+        <button id="toggle-time-machine" class="time-machine-button">Toggle Time Machine</button>
+        <button id="speak-button" class="speak-button">Speak Result</button>
+        <button id="print-button" class="print-button">Print</button>
+      </div>
+      <div class="progress-container" id="birthday-progress-container" style="display: none;">
+        <label for="birthday-progress">Birthday Progress</label>
+        <div class="progress-bar" id="birthday-progress"></div>
+      </div>
+      <div class="time-machine-container" id="time-machine-container" style="display: none;">
+        <label for="timeMachineDate">Time Machine: Select a Date</label>
+        <input type="date" id="timeMachineDate">
+      </div>
+      <div id="chart-container">
+        <canvas id="lifeChart"></canvas>
+      </div>
+    </main>
+  </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const dateInput = document.getElementById("dateInput");
-            dateInput.max = new Date().toISOString().split("T")[0];
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var dateInput = document.getElementById("dateInput");
+      var lifeExpectancyInput = document.getElementById("lifeExpectancy");
+      var resultDiv = document.getElementById("result");
+      var ageForm = document.getElementById("age-form");
+      var resetButton = document.getElementById("reset-button");
+      var copyButton = document.getElementById("copy-button");
+      var shareButton = document.getElementById("share-button");
+      var liveButton = document.getElementById("live-button");
+      var toggleTimeMachineButton = document.getElementById("toggle-time-machine");
+      var speakButton = document.getElementById("speak-button");
+      var printButton = document.getElementById("print-button");
+      var themeToggle = document.getElementById("theme-toggle");
+      var body = document.body;
+      var actionButtonsDiv = document.getElementById("action-buttons");
+      var progressContainer = document.getElementById("birthday-progress-container");
+      var progressBar = document.getElementById("birthday-progress");
+      var timeMachineContainer = document.getElementById("time-machine-container");
+      var timeMachineDateInput = document.getElementById("timeMachineDate");
+      var chartContainer = document.getElementById("chart-container");
+      var lifeChart = null;
 
-            const result = document.getElementById("result");
-            const calculateButton = document.getElementById("calculate-button");
+      var liveInterval = null;
+      var activeBirthDate = null;
+      var timeMachineMode = false;
+      
+      dateInput.max = new Date().toISOString().split("T")[0];
 
-            calculateButton.addEventListener("click", function () {
-                calculateAge();
+      var savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        body.setAttribute("data-theme", savedTheme);
+        updateThemeIcon(savedTheme);
+      } else {
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var defaultTheme = prefersDark ? "dark" : "light";
+        body.setAttribute("data-theme", defaultTheme);
+        updateThemeIcon(defaultTheme);
+      }
+
+      ageForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        stopLiveUpdate();
+        if(timeMachineMode) {
+          timeMachineMode = false;
+          timeMachineContainer.style.display = "none";
+          toggleTimeMachineButton.textContent = "Toggle Time Machine";
+        }
+        calculateAndDisplayAge();
+      });
+
+      resetButton.addEventListener("click", function() {
+        dateInput.value = "";
+        resultDiv.innerHTML = "";
+        resultDiv.classList.remove("visible");
+        actionButtonsDiv.style.display = "none";
+        progressContainer.style.display = "none";
+        timeMachineContainer.style.display = "none";
+        chartContainer.style.display = "none";
+        timeMachineMode = false;
+        stopLiveUpdate();
+      });
+
+      copyButton.addEventListener("click", function() {
+        try {
+          var tempTextarea = document.createElement("textarea");
+          tempTextarea.value = resultDiv.textContent;
+          document.body.appendChild(tempTextarea);
+          tempTextarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(tempTextarea);
+          copyButton.textContent = "Copied!";
+          setTimeout(function() {
+            copyButton.textContent = "Copy Result";
+          }, 2000);
+        } catch (err) {
+          console.error("Copy failed:", err);
+        }
+      });
+
+      shareButton.addEventListener("click", function() {
+        var text = resultDiv.textContent;
+        if (navigator.share) {
+          navigator.share({
+            title: "My Age Result",
+            text: text,
+            url: window.location.href
+          }).catch(function(err) {
+            console.error("Share failed:", err);
+          });
+        } else {
+          var tweet = encodeURIComponent("Check out my age: " + text);
+          window.open("https://twitter.com/intent/tweet?text=" + tweet, "_blank");
+        }
+      });
+
+      liveButton.addEventListener("click", function() {
+        if (!activeBirthDate) { return; }
+        if (timeMachineMode) { return; }
+        if (liveInterval) {
+          stopLiveUpdate();
+        } else {
+          liveButton.textContent = "Stop Live Update";
+          liveButton.classList.add("live-active");
+          liveInterval = setInterval(function() {
+            updateAgeDisplay(activeBirthDate);
+          }, 1000);
+        }
+      });
+
+      toggleTimeMachineButton.addEventListener("click", function() {
+        if (!activeBirthDate) { return; }
+        stopLiveUpdate();
+        timeMachineMode = !timeMachineMode;
+        if (timeMachineMode) {
+          timeMachineContainer.style.display = "block";
+          var todayStr = new Date().toISOString().split("T")[0];
+          timeMachineDateInput.value = todayStr;
+          toggleTimeMachineButton.textContent = "Disable Time Machine";
+          timeMachineDateInput.min = dateInput.value;
+          var maxDate = new Date(activeBirthDate.getFullYear() + 120, activeBirthDate.getMonth(), activeBirthDate.getDate());
+          timeMachineDateInput.max = maxDate.toISOString().split("T")[0];
+          updateAgeDisplay(activeBirthDate, new Date(timeMachineDateInput.value));
+        } else {
+          timeMachineContainer.style.display = "none";
+          toggleTimeMachineButton.textContent = "Toggle Time Machine";
+          updateAgeDisplay(activeBirthDate);
+        }
+      });
+
+      timeMachineDateInput.addEventListener("change", function() {
+        if (timeMachineMode && activeBirthDate) {
+          var selectedDate = new Date(timeMachineDateInput.value);
+          updateAgeDisplay(activeBirthDate, selectedDate);
+        }
+      });
+
+      speakButton.addEventListener("click", function() {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          var utterance = new SpeechSynthesisUtterance(resultDiv.textContent);
+          window.speechSynthesis.speak(utterance);
+        } else {
+          alert("Sorry, your browser does not support speech synthesis.");
+        }
+      });
+
+      printButton.addEventListener("click", function() {
+        window.print();
+      });
+
+      themeToggle.addEventListener("click", function() {
+        var currentTheme = body.getAttribute("data-theme");
+        var newTheme = currentTheme === "dark" ? "light" : "dark";
+        body.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        updateThemeIcon(newTheme);
+      });
+
+      function updateThemeIcon(theme) {
+        var icon = themeToggle.querySelector("i");
+        if (theme === "dark") {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+        } else {
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+        }
+      }
+
+      function stopLiveUpdate() {
+        if (liveInterval) {
+          clearInterval(liveInterval);
+          liveInterval = null;
+          liveButton.textContent = "Start Live Update";
+          liveButton.classList.remove("live-active");
+        }
+      }
+
+      function calculateAndDisplayAge() {
+        var inputDate = dateInput.value;
+        if (!inputDate) {
+          showResult("Please enter a valid date.");
+          return;
+        }
+        var birthDate = new Date(inputDate);
+        var today = new Date();
+        if (birthDate > today) {
+          showResult("Birth date cannot be in the future.");
+          return;
+        }
+        activeBirthDate = birthDate;
+        updateAgeDisplay(birthDate);
+        actionButtonsDiv.style.display = "flex";
+      }
+
+      function getAgeDetails(birthDate, targetDate) {
+        var years = targetDate.getFullYear() - birthDate.getFullYear();
+        var months = targetDate.getMonth() - birthDate.getMonth();
+        var days = targetDate.getDate() - birthDate.getDate();
+        if (days < 0) {
+          months--;
+          var previousMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
+          days += previousMonth.getDate();
+        }
+        if (months < 0) {
+          years--;
+          months += 12;
+        }
+        var diffTime = targetDate - birthDate;
+        var weeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+        var hours = Math.floor(diffTime / (1000 * 60 * 60));
+        var minutes = Math.floor(diffTime / (1000 * 60));
+        var seconds = Math.floor(diffTime / 1000);
+
+        var nextBirthday = new Date(targetDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+        if (targetDate > nextBirthday) {
+          nextBirthday.setFullYear(targetDate.getFullYear() + 1);
+        }
+        var msInDay = 1000 * 60 * 60 * 24;
+        var daysUntilBirthday = Math.ceil((nextBirthday - targetDate) / msInDay);
+        var birthdayMessage = "";
+        if (daysUntilBirthday === 0) {
+          birthdayMessage = "Happy Birthday! 🎉";
+          if (typeof confetti === "function") {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 }
             });
+          }
+        } else {
+          birthdayMessage = "Your next birthday is in <strong>" + daysUntilBirthday + "</strong> day" + (daysUntilBirthday > 1 ? "s" : "") + "!";
+        }
+        return {
+          years: years,
+          months: months,
+          days: days,
+          weeks: weeks,
+          hours: hours,
+          minutes: minutes,
+          seconds: seconds,
+          birthdayMessage: birthdayMessage
+        };
+      }
 
-            function calculateAge() {
-                const birthDate = new Date(dateInput.value);
-                const today = new Date();
+      function updateAgeDisplay(birthDate, targetDate) {
+        if (!targetDate) { targetDate = new Date(); }
+        var details = getAgeDetails(birthDate, targetDate);
+        var resultHTML =
+          "<p>You are <strong>" + details.years + "</strong> years, <strong>" + details.months + "</strong> months, and <strong>" + details.days + "</strong> days old!</p>" +
+          "<p>That's approximately:</p>" +
+          "<ul>" +
+            "<li><strong>" + details.weeks + "</strong> weeks</li>" +
+            "<li><strong>" + details.hours + "</strong> hours</li>" +
+            "<li><strong>" + details.minutes + "</strong> minutes</li>" +
+            "<li><strong>" + details.seconds + "</strong> seconds</li>" +
+          "</ul>" +
+          "<p class='additional-info'>" + details.birthdayMessage + "</p>";
 
-                if (isNaN(birthDate)) {
-                    result.innerHTML = "Please enter a valid date.";
-                    return;
+        var milestones = [1, 5, 10, 18, 21, 30, 40, 50, 60, 70, 80, 90];
+        if (milestones.indexOf(details.years) !== -1) {
+          resultHTML += "<p class='milestone'>Congratulations on reaching " + details.years + " years!</p>";
+        }
+
+        var heartbeats = details.minutes * 70;
+        var breaths = details.minutes * 16;
+        resultHTML += "<div class='fun-facts'>" +
+                      "<p>Fun Fact: Your heart has beaten approximately <strong>" + heartbeats.toLocaleString() + "</strong> times!</p>" +
+                      "<p>Fun Fact: You've taken around <strong>" + breaths.toLocaleString() + "</strong> breaths!</p>" +
+                      "</div>";
+        showResult(resultHTML);
+
+        var prevBirthday = new Date(targetDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+        if (targetDate < prevBirthday) {
+          prevBirthday.setFullYear(targetDate.getFullYear() - 1);
+        }
+        var nextBirthday = new Date(prevBirthday.getFullYear() + 1, birthDate.getMonth(), birthDate.getDate());
+        var progress = (targetDate - prevBirthday) / (nextBirthday - prevBirthday);
+        progressBar.style.width = (progress * 100).toFixed(2) + "%";
+        progressContainer.style.display = "block";
+
+        var fractionalAge = (targetDate - birthDate) / (1000 * 60 * 60 * 24 * 365.25);
+        var lifeExp = parseFloat(lifeExpectancyInput.value) || 80;
+        var livedPercent = Math.min((fractionalAge / lifeExp) * 100, 100);
+        var remaining = 100 - livedPercent;
+        var cs = getComputedStyle(document.documentElement);
+        var primaryColor = cs.getPropertyValue('--primary-color').trim();
+        var secondaryColor = cs.getPropertyValue('--secondary-color').trim();
+        if (!lifeChart) {
+          var ctx = document.getElementById("lifeChart").getContext("2d");
+          lifeChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Life Lived (%)', 'Life Remaining (%)'],
+              datasets: [{
+                data: [livedPercent, remaining],
+                backgroundColor: [primaryColor, secondaryColor]
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'bottom'
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return context.label + ": " + context.parsed + "%";
+                    }
+                  }
                 }
-
-                const diffTime = Math.abs(today - birthDate);
-                const age = new Date(diffTime);
-
-                const years = age.getUTCFullYear() - 1970;
-                const months = age.getUTCMonth();
-                const days = age.getUTCDate() - 1;
-                const weeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-                const hours = Math.floor(diffTime / (1000 * 60 * 60));
-                const seconds = Math.floor(diffTime / 1000);
-
-                result.innerHTML = `
-                    🎉 You are <strong>${years}</strong> years, <strong>${months}</strong> months, 
-                    <strong>${days}</strong> days old!<br>
-                    That's also approximately:<br>
-                    <strong>${weeks}</strong> weeks, <strong>${hours}</strong> hours, 
-                    or <strong>${seconds}</strong> seconds! 🎉
-                `;
+              }
             }
-        });
-    </script>
+          });
+          chartContainer.style.display = "block";
+        } else {
+          lifeChart.data.datasets[0].data = [livedPercent, remaining];
+          lifeChart.update();
+        }
+      }
 
+      function showResult(message) {
+        resultDiv.innerHTML = message;
+        resultDiv.classList.remove("visible");
+        void resultDiv.offsetWidth;
+        resultDiv.classList.add("visible");
+      }
+    });
+  </script>
 </body>
 </html>
