@@ -1,211 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patch Notes | JP Portfolio</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png">
-    <link rel="manifest" href="/websites/manifest.json">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #121212;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            margin-top: 20px;
-            opacity: 0;
-            animation: fadeIn 1s ease-out forwards;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            font-size: 2.5rem;
-            color: #f5b300;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-        h2 {
-            color: #f5b300;
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 1.6rem;
-        }
-        .patch-list, .issue-list, .upcoming-list {
-            margin-top: 20px;
-            text-align: left;
-            width: 100%;
-        }
-        .patch, .issue, .upcoming {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
-            border-left: 5px solid #f5b300;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            cursor: pointer;
-            min-height: 150px;
-            width: 90%;
-            margin-left: 5%;
-            box-sizing: border-box;
-        }
-        .patch:hover, .issue:hover, .upcoming:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-8px);
-        }
-        .patch .icon, .issue .icon, .upcoming .icon {
-            font-size: 28px;
-            color: #f5b300;
-            margin-bottom: 15px;
-        }
-        .patch a, .issue a, .upcoming a {
-            color: #f5b300;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 10px;
-            transition: color 0.3s ease-in-out;
-        }
-        .patch a:hover, .issue a:hover, .upcoming a:hover {
-            color: #ffeb3b;
-        }
-        .date {
-            font-size: 13px;
-            color: #bbb;
-            margin-top: 5px;
-        }
-        .search-bar {
-            padding: 12px;
-            border-radius: 5px;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 400px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #f5b300;
-            color: #f5b300;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        .search-bar:focus {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .section-separator {
-            width: 80%;
-            border-top: 2px solid #f5b300;
-            margin: 20px auto;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patch Notes | JP Portfolio</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png" />
+  <link rel="manifest" href="/websites/manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --bg-color: #121212;
+      --container-bg: rgba(0, 0, 0, 0.85);
+      --accent-color: #f5b300;
+      --text-color: #ffffff;
+      --secondary-text: #bbbbbb;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-hover-bg: rgba(255, 255, 255, 0.1);
+      --transition: all 0.3s ease;
+      --max-width: 1200px;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--accent-color);
+      color: var(--bg-color);
+      padding: 8px 16px;
+      z-index: 1000;
+      transition: top 0.3s ease;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--container-bg);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--accent-color);
+    }
+    header .logo h1 {
+      font-size: 1.8rem;
+      color: var(--accent-color);
+      text-transform: uppercase;
+    }
+    header nav {
+      display: flex;
+      gap: 20px;
+    }
+    header nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    header nav a:hover {
+      color: var(--accent-color);
+    }
+    header .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    header button.theme-toggle,
+    header button.print-toggle {
+      background: none;
+      border: 1px solid var(--accent-color);
+      border-radius: 5px;
+      color: var(--accent-color);
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    header button.theme-toggle:hover,
+    header button.print-toggle:hover {
+      background: var(--accent-color);
+      color: var(--bg-color);
+    }
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 20px auto;
+      background: var(--container-bg);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+    }
+    .search-container {
+      position: relative;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+    .search-container input {
+      width: 100%;
+      padding: 12px 40px 12px 20px;
+      border: 2px solid var(--accent-color);
+      border-radius: 25px;
+      background: transparent;
+      color: var(--accent-color);
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    .search-container input:focus {
+      background: rgba(255,255,255,0.1);
+    }
+    .search-container .clear-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--accent-color);
+      font-size: 1.2rem;
+      display: none;
+      transition: var(--transition);
+    }
+    section {
+      margin: 40px 0;
+    }
+    section h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+    }
+    .sort-toggle {
+      display: inline-block;
+      background: var(--accent-color);
+      color: var(--bg-color);
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+    .sort-toggle:hover {
+      background: darkorange;
+    }
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .note-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 5px solid var(--accent-color);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .note-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .note-card:hover {
+      background: var(--card-hover-bg);
+      transform: translateY(-5px);
+    }
+    .note-card .icon {
+      font-size: 2rem;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    .note-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+    .note-card p {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    .note-card a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .note-card a:hover {
+      text-decoration: underline;
+    }
+    .note-card .date {
+      font-size: 0.9rem;
+      color: var(--secondary-text);
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+    }
+    .no-results {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--secondary-text);
+      margin: 20px 0;
+    }
+    .section-separator {
+      width: 80%;
+      border-top: 2px solid var(--accent-color);
+      margin: 40px auto;
+    }
+    .detail-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .detail-modal.show {
+      display: flex;
+      opacity: 1;
+    }
+    .detail-modal-content {
+      background: var(--container-bg);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      position: relative;
+      animation: slideIn 0.4s ease-out forwards;
+      outline: none;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .detail-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: var(--bg-color);
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      z-index: 100;
+    }
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media print {
+      header, .search-container, .back-to-top, .theme-toggle, .print-toggle, nav {
+        display: none !important;
+      }
+      .container {
+        box-shadow: none;
+        backdrop-filter: none;
+        max-width: 100%;
+      }
+    }
+    @media (max-width: 600px) {
+      header .logo h1 {
+        font-size: 1.6rem;
+      }
+      header nav a {
+        font-size: 0.9rem;
+      }
+      .search-container input {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Patch Notes</h1>
-            <p>Stay updated with the latest changes and improvements.</p>
-            <input type="text" id="searchInput" class="search-bar" placeholder="Search..." oninput="debouncedSearch()">
-        </header>
-        <main>
-            <br><div class="section-separator"></div>
-            <section class="updates" id="updates">
-                <h2>Recent Updates</h2>
-                <div class="patch-list" id="patchList"></div>
-            </section>
-            <div class="section-separator"></div>
-            <section class="issues" id="issues">
-                <h2>Known Issues</h2>
-                <div class="issue-list" id="issueList"></div>
-            </section>
-            <div class="section-separator"></div>
-            <h2>Upcoming Updates</h2>
-            <div class="upcoming-list" id="upcomingList"></div>
-        </main>
+  <a href="#mainContent" class="skip-link">Skip to Content</a>
+  
+  <header>
+    <div class="logo"><h1>Patch Notes</h1></div>
+    <nav>
+      <a href="#recentUpdates">Recent Updates</a>
+      <a href="#knownIssues">Known Issues</a>
+      <a href="#upcomingUpdates">Upcoming Updates</a>
+    </nav>
+    <div class="controls">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark/Light Mode">Dark</button>
+      <button class="print-toggle" id="printToggle" aria-label="Print Patch Notes">Print</button>
     </div>
-
-    <script>
-        const patchData = [
-            { title: 'AC Complete Redesign', description: 'Complelely redesigned and improved UI & the functionality of the Age Calculator tool. Still a WIP however.', website: 'Age Calculator', link: 'https://nzaviation.github.io/websites/ac', date: 'Feb 7, 2025' },
-            { title: 'New Thumbnails on Dashboard', description: 'Added thumbnail images to each individual website link on the dashboard.', website: 'JP Portfolio', link: 'https://nzaviation.github.io/websites/', date: 'Feb 7, 2025' }
-        ];
-
-        const issueData = [
-            { title: 'Age Calculator bugs and issues', description: 'Following the complete redesign of Age Calculator, I have been made aware of some bugs and small issues with the application. Will fix them soon.', website: 'Age Calculator', link: 'https://nzaviation.github.io/websites/ac', date: 'Fix Expected Feb 2025' },
-            { title: 'Patch Notes Eyesore', description: 'Known issues on Patch Notes site, will update soon.', website: 'Patch Notes', link: 'https://nzaviation.github.io/websites/patch-notes', date: 'Fix Expected Feb 2025' },
-            { title: 'Incorrect Links', description: 'Multiple sites have a "Back To Websites" button that has an old, incorrect link.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Fix Expected March 2025' }
-        ];
-
-        const upcomingData = [
-            { title: 'Site Fixes', description: 'Fixing all the bugs and issues on Patch Notes and Age Calculator websites following their redesigns.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Update Expected March 2025' },
-            { title: 'Updates to Multiple Sites', description: 'Updating multiple of the websites in my portfolio.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Update Expected March 2025' }
-        ];
-
-        function renderData(data, type) {
-            const listElement = document.getElementById(type);
-            listElement.innerHTML = '';
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.classList.add(type.slice(0, -4));
-                div.innerHTML = `
-                    <div class="icon"><i class="fas fa-${type === 'patchList' ? 'cogs' : type === 'issueList' ? 'bug' : 'calendar-alt'}"></i></div>
-                    <strong>${item.title}</strong>
-                    <p>${item.description}</p>
-                    <p><a href="${item.link}" target="_blank">${item.website}</a></p>
-                    ${item.date ? `<p class="date">${item.date}</p>` : ''}
-                `;
-                listElement.appendChild(div);
-            });
-        }
-
-        function debouncedSearch() {
-            clearTimeout(window.debounceTimeout);
-            window.debounceTimeout = setTimeout(() => {
-                searchData();
-            }, 300);
-        }
-
-        function searchData() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filteredPatchData = patchData.filter(patch => patch.title.toLowerCase().includes(query) || patch.description.toLowerCase().includes(query));
-            const filteredIssueData = issueData.filter(issue => issue.title.toLowerCase().includes(query) || issue.description.toLowerCase().includes(query));
-            const filteredUpcomingData = upcomingData.filter(update => update.title.toLowerCase().includes(query) || update.description.toLowerCase().includes(query));
-
-            renderData(filteredPatchData, 'patchList');
-            renderData(filteredIssueData, 'issueList');
-            renderData(filteredUpcomingData, 'upcomingList');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderData(patchData, 'patchList');
-            renderData(issueData, 'issueList');
-            renderData(upcomingData, 'upcomingList');
+  </header>
+  
+  <main id="mainContent" class="container">
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search patch notes..." oninput="debouncedSearch()" />
+      <i class="fas fa-times clear-icon" id="clearSearch" aria-label="Clear search" onclick="clearSearch()"></i>
+    </div>
+    
+    <section id="recentUpdates">
+      <h2>Recent Updates</h2>
+      <div class="sort-toggle" id="sortPatchToggle" onclick="toggleSort('patch')">Sort by Date &#x25BC;</div>
+      <div class="notes-grid" id="patchList"></div>
+      <div id="patchNoResults" class="no-results" style="display:none;">No updates found.</div>
+    </section>
+    
+    <div class="section-separator"></div>
+    
+    <section id="knownIssues">
+      <h2>Known Issues</h2>
+      <div class="sort-toggle" id="sortIssueToggle" onclick="toggleSort('issue')">Sort by Date &#x25BC;</div>
+      <div class="notes-grid" id="issueList"></div>
+      <div id="issueNoResults" class="no-results" style="display:none;">No issues found.</div>
+    </section>
+    
+    <div class="section-separator"></div>
+    
+    <section id="upcomingUpdates">
+      <h2>Upcoming Updates</h2>
+      <div class="sort-toggle" id="sortUpcomingToggle" onclick="toggleSort('upcoming')">Sort by Date &#x25BC;</div>
+      <div class="notes-grid" id="upcomingList"></div>
+      <div id="upcomingNoResults" class="no-results" style="display:none;">No upcoming updates found.</div>
+    </section>
+  </main>
+  
+  <div id="detailModal" class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle" aria-describedby="detailModalDescription">
+    <div class="detail-modal-content" tabindex="-1">
+      <button class="detail-modal-close" id="detailModalClose" aria-label="Close Details Modal"><i class="fas fa-times"></i></button>
+      <h3 id="detailModalTitle"></h3>
+      <p id="detailModalDescription"></p>
+      <p id="detailModalWebsite"></p>
+      <p id="detailModalDate"></p>
+    </div>
+  </div>
+  
+  <button class="back-to-top" id="backToTop" aria-label="Back to Top"><i class="fas fa-arrow-up"></i></button>
+  
+  <script>
+    const patchData = [
+      { title: 'AC Complete Redesign', description: 'Completely redesigned and improved UI & functionality of the Age Calculator tool. Still a work in progress.', website: 'Age Calculator', link: 'https://nzaviation.github.io/websites/ac', date: 'Feb 7, 2025' },
+      { title: 'New Thumbnails on Dashboard', description: 'Added thumbnail images to each website link on the dashboard for a fresh look.', website: 'JP Portfolio', link: 'https://nzaviation.github.io/websites/', date: 'Feb 7, 2025' }
+    ];
+    const issueData = [
+      { title: 'Age Calculator Bugs', description: 'Post-redesign, some bugs have been identified. A fix is coming soon.', website: 'Age Calculator', link: 'https://nzaviation.github.io/websites/ac', date: 'Fix Expected Feb 2025' },
+      { title: 'Patch Notes Layout Issues', description: 'Some layout issues on the Patch Notes page. Improvements are underway.', website: 'Patch Notes', link: 'https://nzaviation.github.io/websites/patch-notes', date: 'Fix Expected Feb 2025' },
+      { title: 'Incorrect Links', description: 'Multiple sites have a "Back To Websites" button with an outdated link.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Fix Expected March 2025' }
+    ];
+    const upcomingData = [
+      { title: 'Site Fixes', description: 'Resolving bugs and issues across Patch Notes and Age Calculator sites.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Update Expected March 2025' },
+      { title: 'Multiple Site Updates', description: 'Rolling out updates for several websites in the portfolio.', website: 'Multiple', link: 'https://nzaviation.github.io/websites', date: 'Update Expected March 2025' }
+    ];
+    
+    let sortOrder = { patch: 'desc', issue: 'desc', upcoming: 'desc' };
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      document.getElementById('themeToggle').textContent = 'Light';
+    }
+    
+    function renderData(data, containerId, noResultsId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (data.length === 0) {
+        document.getElementById(noResultsId).style.display = 'block';
+      } else {
+        document.getElementById(noResultsId).style.display = 'none';
+        data.forEach(item => {
+          const card = document.createElement('div');
+          card.classList.add('note-card');
+          let iconClass = '';
+          if (containerId === 'patchList') iconClass = 'cogs';
+          else if (containerId === 'issueList') iconClass = 'bug';
+          else if (containerId === 'upcomingList') iconClass = 'calendar-alt';
+          card.innerHTML = `
+            <div class="icon"><i class="fas fa-${iconClass}"></i></div>
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <p><a href="${item.link}" target="_blank" rel="noopener">${item.website}</a></p>
+            ${item.date ? `<div class="date">${item.date}</div>` : ''}
+          `;
+          card.addEventListener('click', () => openModal(item));
+          container.appendChild(card);
         });
-    </script>
+      }
+      setupCardObserver();
+    }
+    
+    function setupCardObserver() {
+      const cards = document.querySelectorAll('.note-card');
+      const options = { threshold: 0.1 };
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, options);
+      cards.forEach(card => observer.observe(card));
+    }
+    
+    function toggleSort(type) {
+      sortOrder[type] = sortOrder[type] === 'desc' ? 'asc' : 'desc';
+      document.getElementById(`sort${capitalize(type)}Toggle`).innerHTML = `Sort by Date ${sortOrder[type] === 'desc' ? '&#x25BC;' : '&#x25B2;'}`;
+      sortAndRender(type);
+    }
+    function sortAndRender(type) {
+      let data, containerId, noResultsId;
+      if (type === 'patch') { data = [...patchData]; containerId = 'patchList'; noResultsId = 'patchNoResults'; }
+      else if (type === 'issue') { data = [...issueData]; containerId = 'issueList'; noResultsId = 'issueNoResults'; }
+      else if (type === 'upcoming') { data = [...upcomingData]; containerId = 'upcomingList'; noResultsId = 'upcomingNoResults'; }
+      data.sort((a, b) => {
+        let dateA = Date.parse(a.date), dateB = Date.parse(b.date);
+        if (isNaN(dateA) || isNaN(dateB)) return 0;
+        return sortOrder[type] === 'desc' ? dateB - dateA : dateA - dateB;
+      });
+      renderData(data, containerId, noResultsId);
+    }
+    
+    function debouncedSearch() {
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(searchData, 300);
+    }
+    function searchData() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const clearIcon = document.getElementById('clearSearch');
+      clearIcon.style.display = query.length > 0 ? 'block' : 'none';
+      const filteredPatch = patchData.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+      );
+      const filteredIssue = issueData.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+      );
+      const filteredUpcoming = upcomingData.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+      );
+      renderData(filteredPatch, 'patchList', 'patchNoResults');
+      renderData(filteredIssue, 'issueList', 'issueNoResults');
+      renderData(filteredUpcoming, 'upcomingList', 'upcomingNoResults');
+    }
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('clearSearch').style.display = 'none';
+      searchData();
+    }
+    
+    const detailModal = document.getElementById('detailModal');
+    const detailModalClose = document.getElementById('detailModalClose');
+    function openModal(item) {
+      document.getElementById('detailModalTitle').textContent = item.title;
+      document.getElementById('detailModalDescription').textContent = item.description;
+      document.getElementById('detailModalWebsite').innerHTML = `<a href="${item.link}" target="_blank" rel="noopener" style="color: var(--accent-color); font-weight: 600;">${item.website}</a>`;
+      document.getElementById('detailModalDate').textContent = item.date || '';
+      detailModal.classList.add('show');
+      const focusableElements = detailModal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+      const firstElem = focusableElements[0];
+      const lastElem = focusableElements[focusableElements.length - 1];
+      detailModal.addEventListener('keydown', trapTabKey);
+      function trapTabKey(e) {
+        if (e.key === 'Tab') {
+          if (e.shiftKey) {
+            if (document.activeElement === firstElem) {
+              e.preventDefault();
+              lastElem.focus();
+            }
+          } else {
+            if (document.activeElement === lastElem) {
+              e.preventDefault();
+              firstElem.focus();
+            }
+          }
+        }
+      }
+      detailModal.querySelector('.detail-modal-content').focus();
+    }
+    function closeModal() {
+      detailModal.classList.remove('show');
+      detailModal.removeEventListener('keydown', trapTabKey);
+    }
+    detailModalClose.addEventListener('click', closeModal);
+    detailModal.addEventListener('click', (e) => {
+      if (e.target === detailModal) closeModal();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && detailModal.classList.contains('show')) {
+        closeModal();
+      }
+    });
+    
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      if (document.body.classList.contains('light-mode')) {
+        themeToggle.textContent = 'Light';
+        localStorage.setItem('theme', 'light');
+      } else {
+        themeToggle.textContent = 'Dark';
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+    
+    const printToggle = document.getElementById('printToggle');
+    printToggle.addEventListener('click', () => window.print());
+    
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) backToTop.classList.add('show');
+      else backToTop.classList.remove('show');
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      sortAndRender('patch');
+      sortAndRender('issue');
+      sortAndRender('upcoming');
+    });
+  </script>
 </body>
 </html>
