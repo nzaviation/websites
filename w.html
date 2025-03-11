@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wishlist Application | JP Portfolio</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png">
+  <link rel="manifest" href="/websites/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1f2937;
+      --secondary-color: #10b981;
+      --accent-color: #f59e0b;
+      --error-color: #ef4444;
+      --bg-light: #f3f4f6;
+      --bg-dark: #111827;
+      --modal-bg: #ffffff;
+      --modal-dark-bg: #1f2937;
+      --transition-speed: 0.3s;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-light);
+      color: var(--primary-color);
+      line-height: 1.6;
+      padding: 20px;
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
+    body.dark { background: var(--bg-dark); color: #e5e7eb; }
+    a { text-decoration: none; color: inherit; }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), #374151);
+      color: #fff;
+      padding: 40px 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    header h1 {
+      font-size: 3rem;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    header .rename-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      padding: 8px 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background var(--transition-speed);
+      color: #fff;
+    }
+    header .rename-btn:hover { background: rgba(255,255,255,0.4); }
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .theme-toggle button {
+      background: rgba(255,255,255,0.25);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: #fff;
+      transition: background var(--transition-speed);
+    }
+    .theme-toggle button:hover { background: rgba(255,255,255,0.4); }
+    
+    nav.top-nav {
+      margin-bottom: 20px;
+    }
+    nav.top-nav ul.tabs {
+      display: flex;
+      list-style: none;
+      border-bottom: 2px solid #d1d5db;
+    }
+    nav.top-nav ul.tabs li {
+      flex: 1;
+      text-align: center;
+      padding: 14px 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background var(--transition-speed);
+    }
+    nav.top-nav ul.tabs li.active {
+      background: var(--secondary-color);
+      color: #fff;
+      border-radius: 12px 12px 0 0;
+    }
+    nav.top-nav ul.tabs li:hover { background: #e5e7eb; }
+    body.dark nav.top-nav ul.tabs li:hover { background: #374151; }
+    @media (max-width: 600px) { nav.top-nav { display: none; } }
+    
+    nav.bottom-nav {
+      display: none;
+    }
+    @media (max-width: 600px) {
+      nav.bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-light);
+        border-top: 1px solid #d1d5db;
+        box-shadow: 0 -4px 8px rgba(0,0,0,0.15);
+        z-index: 1000;
+      }
+      body.dark nav.bottom-nav {
+        background: var(--bg-dark);
+        border-top: 1px solid #374151;
+      }
+      nav.bottom-nav button {
+        flex: 1;
+        padding: 14px 0;
+        border: none;
+        background: none;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        transition: background var(--transition-speed);
+      }
+      body.dark nav.bottom-nav button { color: #e5e7eb; }
+      nav.bottom-nav button.active,
+      nav.bottom-nav button:hover {
+        background: var(--secondary-color);
+        color: #fff;
+      }
+    }
+    
+    .dashboard {
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    body.dark .dashboard { background: #1f2937; }
+    .dashboard div {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .actions button {
+      padding: 14px 22px;
+      background: var(--secondary-color);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background var(--transition-speed);
+    }
+    .actions button:hover { background: #0e9f6e; }
+    
+    .wish-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .wish-item {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    }
+    .wish-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    body.dark .wish-item { background: #1f2937; }
+    .badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--accent-color);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      z-index: 10;
+    }
+    .wish-item h3 {
+      margin: 16px 0 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: default;
+    }
+    .wish-item p { 
+      flex-grow: 1; 
+      margin-bottom: 12px; 
+      font-size: 1rem; 
+      color: inherit; 
+    }
+    .wish-item p.description {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .price {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+    .progress-container {
+      background: #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 10px;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--secondary-color);
+      width: 0%;
+      transition: width var(--transition-speed);
+    }
+    .wish-item a {
+      color: var(--primary-color);
+      margin-bottom: 16px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    body.dark .wish-item a { color: var(--secondary-color); }
+    .item-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    .item-actions button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background var(--transition-speed);
+    }
+    .item-actions button.edit { background: #2563eb; color: #fff; }
+    .item-actions button.delete { background: var(--error-color); color: #fff; }
+    .item-actions button.purchase { background: #7c3aed; color: #fff; }
+    .item-actions button.revert { background: var(--accent-color); color: #fff; }
+    
+    .image-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: #d1d5db;
+    }
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform var(--transition-speed);
+    }
+    .image-container img:hover { transform: scale(1.05); }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: fadeIn var(--transition-speed);
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--modal-bg);
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideIn var(--transition-speed);
+    }
+    body.dark .modal-content { background: var(--modal-dark-bg); }
+    .modal-content .close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .modal-content form label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+    .modal-content form input,
+    .modal-content form textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .modal-content form button {
+      margin-top: 24px;
+      padding: 14px;
+      width: 100%;
+      background: var(--secondary-color);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background var(--transition-speed);
+    }
+    .modal-content form button:hover { background: #0e9f6e; }
+    #photoPreview {
+      margin-top: 12px;
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none;
+    }
+    #imageModal .modal-content {
+      max-width: 800px;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+    }
+    #imageModal img { width: 100%; border-radius: 16px; }
+    #confirmModal .modal-content {
+      max-width: 400px;
+      text-align: center;
+    }
+    #confirmModal .modal-content p {
+      margin: 20px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    #confirmModal .confirm-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    #confirmModal .confirm-buttons button {
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background var(--transition-speed);
+    }
+    #confirmModal .confirm-buttons button.yes { background: var(--secondary-color); color: #fff; }
+    #confirmModal .confirm-buttons button.no { background: var(--error-color); color: #fff; }
+    
+    .toast-container {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1200;
+    }
+    @media (max-width: 600px) {
+      .toast-container { bottom: 100px; }
+    }
+    .toast {
+      background: var(--modal-dark-bg);
+      color: #fff;
+      padding: 16px 24px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      opacity: 0.97;
+      animation: slideDown var(--transition-speed), fadeOut 0.5s 2.5s forwards;
+    }
+    .toast.error { background: var(--error-color); }
+    @keyframes fadeOut { to { opacity: 0; } }
+    @keyframes slideDown { from { transform: translateY(20px); } to { transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateY(-20px); } to { transform: translateY(0); } }
+    
+    @media (max-width: 600px) {
+      header h1 { font-size: 2.4rem; }
+      .actions button { font-size: 0.9rem; padding: 10px 16px; }
+      .wish-list { grid-template-columns: 1fr; }
+    }
+    
+    .custom-checkbox {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      padding-left: 28px;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 20px;
+    }
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    .custom-checkbox .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      width: 20px;
+      background-color: #eee;
+      border-radius: 4px;
+      transition: background var(--transition-speed);
+    }
+    .custom-checkbox:hover .checkmark { background-color: #ccc; }
+    .custom-checkbox input:checked ~ .checkmark { background-color: var(--secondary-color); }
+    .custom-checkbox .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    .custom-checkbox input:checked ~ .checkmark:after { display: block; }
+    .custom-checkbox .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="rename-btn" id="renameBtn" title="Rename Wishlist"><i class="fa fa-edit"></i></button>
+    <h1 id="wishlistTitle">Wishlist</h1>
+    <div class="theme-toggle">
+      <button id="darkModeToggle"><i class="fas fa-adjust"></i> Toggle Dark Mode</button>
+    </div>
+  </header>
+  
+  <nav class="top-nav">
+    <ul class="tabs">
+      <li data-tab="active" class="active">Active Wishes</li>
+      <li data-tab="purchased">Purchased Wishes</li>
+    </ul>
+  </nav>
+  
+  <nav class="bottom-nav">
+    <button data-tab="active" class="active"><i class="fas fa-check-circle"></i> Active</button>
+    <button data-tab="purchased"><i class="fas fa-shopping-cart"></i> Purchased</button>
+  </nav>
+  
+  <section class="dashboard">
+    <div>Active: <span id="activeCount">0</span></div>
+    <div>Purchased: <span id="purchasedCount">0</span></div>
+    <div>Total: $<span id="activeTotalPrice">0.00</span></div>
+  </section>
+  
+  <main>
+    <div class="actions">
+      <button id="addWishBtn"><i class="fas fa-plus"></i> Add Wish</button>
+      <button id="importBtn"><i class="fas fa-file-import"></i> Import</button>
+      <button id="exportBtn"><i class="fas fa-file-export"></i> Export</button>
+      <button id="clearPurchasedBtn"><i class="fa fa-trash"></i> Clear Purchased</button>
+      <button id="resetAppBtn"><i class="fas fa-undo"></i> Reset App</button>
+    </div>
+    <div id="wishList" class="wish-list"></div>
+  </main>
+  
+  <div id="renameModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeRenameModal">&times;</span>
+      <h2>Rename Wishlist</h2>
+      <form id="renameForm">
+        <label for="newWishlistName">New Wishlist Name:</label>
+        <input type="text" id="newWishlistName" maxlength="50" placeholder="Enter new wishlist name" required />
+        <button type="submit">Save Name</button>
+      </form>
+    </div>
+  </div>
+  
+  <div id="wishModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeWishModal">&times;</span>
+      <h2 id="modalTitle">Add Wish</h2>
+      <form id="wishForm">
+        <input type="hidden" id="wishId" />
+        <label for="wishName">Name:</label>
+        <input type="text" id="wishName" required />
+  
+        <label for="wishDescription">Description:</label>
+        <textarea id="wishDescription" rows="3" maxlength="200" placeholder="Max 200 characters"></textarea>
+  
+        <label for="wishLink">Link:</label>
+        <input type="url" id="wishLink" placeholder="https://example.com" />
+  
+        <label for="wishPhoto">Photo URL:</label>
+        <input type="url" id="wishPhoto" placeholder="https://example.com/photo.jpg" />
+        <img id="photoPreview" src="" alt="Image Preview" />
+  
+        <label for="wishPrice">Price ($):</label>
+        <input type="number" id="wishPrice" min="0" step="0.01" required />
+  
+        <label for="wishSaved">Amount Saved ($):</label>
+        <input type="number" id="wishSaved" min="0" step="0.01" value="0" />
+  
+        <label class="custom-checkbox">Mark as Most Wanted
+          <input type="checkbox" id="wishMostWanted" />
+          <span class="checkmark"></span>
+        </label>
+  
+        <button type="submit" id="saveWishBtn">Save Wish</button>
+      </form>
+    </div>
+  </div>
+  
+  <div id="importModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeImportModal">&times;</span>
+      <h2>Import Wishes</h2>
+      <textarea id="importData" placeholder="Paste your JSON data here" style="width:100%; height:150px; padding:8px; border:1px solid #ccc; border-radius:8px;"></textarea>
+      <button id="importDataBtn">Import Data</button>
+    </div>
+  </div>
+  
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeImageModal">&times;</span>
+      <img id="modalImage" src="" alt="Image Preview" />
+    </div>
+  </div>
+  
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="confirm-buttons">
+        <button class="yes" id="confirmYes">Yes</button>
+        <button class="no" id="confirmNo">No</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <script>
+    const STORAGE_KEY = 'wishlistData';
+    const THEME_KEY = 'wishlistTheme';
+    const WISHLIST_NAME_KEY = 'wishlistName';
+    let wishes = [];
+    let currentTab = 'active';
+    let dragSrcEl = null;
+  
+    function loadWishes() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      wishes = data ? JSON.parse(data) : [];
+    }
+    function saveWishes() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(wishes));
+    }
+    function loadWishlistName() {
+      const name = localStorage.getItem(WISHLIST_NAME_KEY);
+      return name ? name : "Ultimate Wishlist";
+    }
+    function saveWishlistName(name) {
+      localStorage.setItem(WISHLIST_NAME_KEY, name);
+    }
+  
+    function updateWishlistTitle() {
+      document.getElementById('wishlistTitle').innerText = loadWishlistName();
+    }
+  
+    function updateDashboard() {
+      const activeWishes = wishes.filter(w => !w.purchased);
+      const purchasedWishes = wishes.filter(w => w.purchased);
+      document.getElementById('activeCount').innerText = activeWishes.length;
+      document.getElementById('purchasedCount').innerText = purchasedWishes.length;
+      const totalPrice = activeWishes.reduce((sum, w) => sum + parseFloat(w.price), 0);
+      document.getElementById('activeTotalPrice').innerText = totalPrice.toFixed(2);
+    }
+  
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = 'toast' + (type === 'error' ? ' error' : '');
+      toast.innerText = message;
+      document.getElementById('toastContainer').appendChild(toast);
+      setTimeout(() => { toast.remove(); }, 3000);
+    }
+  
+    function customConfirm(message) {
+      return new Promise(resolve => {
+        const confirmModal = document.getElementById('confirmModal');
+        document.getElementById('confirmMessage').innerText = message;
+        confirmModal.classList.add('active');
+        const yesBtn = document.getElementById('confirmYes');
+        const noBtn = document.getElementById('confirmNo');
+        function cleanUp() {
+          yesBtn.removeEventListener('click', onYes);
+          noBtn.removeEventListener('click', onNo);
+          confirmModal.classList.remove('active');
+        }
+        function onYes() { cleanUp(); resolve(true); }
+        function onNo() { cleanUp(); resolve(false); }
+        yesBtn.addEventListener('click', onYes);
+        noBtn.addEventListener('click', onNo);
+      });
+    }
+  
+    function renderWishes() {
+      const container = document.getElementById('wishList');
+      container.innerHTML = '';
+      const filtered = wishes.filter(w => currentTab === 'active' ? !w.purchased : w.purchased);
+  
+      filtered.forEach(wish => {
+        const card = document.createElement('div');
+        card.className = 'wish-item';
+        if (currentTab === 'active') card.setAttribute('draggable', true);
+        card.dataset.id = wish.id;
+  
+        if (currentTab === 'active') {
+          card.addEventListener('dragstart', handleDragStart);
+          card.addEventListener('dragover', handleDragOver);
+          card.addEventListener('drop', handleDrop);
+          card.addEventListener('dragend', handleDragEnd);
+        }
+  
+        if (wish.mostWanted) {
+          const badge = document.createElement('div');
+          badge.className = 'badge';
+          badge.innerText = 'Most Wanted';
+          card.appendChild(badge);
+        }
+  
+        if (wish.photo) {
+          const imgContainer = document.createElement('div');
+          imgContainer.className = 'image-container';
+          const img = document.createElement('img');
+          img.src = wish.photo;
+          img.alt = wish.name;
+          img.addEventListener('click', () => openImageModal(wish.photo));
+          imgContainer.appendChild(img);
+          card.appendChild(imgContainer);
+        }
+  
+        const title = document.createElement('h3');
+        title.innerText = wish.name;
+        card.appendChild(title);
+  
+        if (wish.description) {
+          const desc = document.createElement('p');
+          desc.className = 'description';
+          desc.innerText = wish.description;
+          card.appendChild(desc);
+        }
+  
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'price';
+        priceDiv.innerText = `Price: $${parseFloat(wish.price).toFixed(2)}`;
+        card.appendChild(priceDiv);
+  
+        if (wish.saved && wish.price > 0) {
+          const progressContainer = document.createElement('div');
+          progressContainer.className = 'progress-container';
+          const progressBar = document.createElement('div');
+          progressBar.className = 'progress-bar';
+          const progPercent = Math.min((wish.saved / wish.price) * 100, 100);
+          progressBar.style.width = progPercent + '%';
+          progressContainer.appendChild(progressBar);
+          card.appendChild(progressContainer);
+        }
+  
+        if (wish.link) {
+          const link = document.createElement('a');
+          link.href = wish.link;
+          link.target = '_blank';
+          link.innerText = 'View Link';
+          card.appendChild(link);
+        }
+  
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'item-actions';
+  
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit';
+        editBtn.innerText = 'Edit';
+        editBtn.addEventListener('click', () => {
+          openWishModal(wish);
+          if(window.innerWidth < 600) document.querySelector('nav.bottom-nav').classList.remove('active');
+        });
+        actionsDiv.appendChild(editBtn);
+  
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete';
+        deleteBtn.innerText = 'Delete';
+        deleteBtn.addEventListener('click', async () => {
+          if (await customConfirm('Delete this wish?')) { deleteWish(wish.id); }
+        });
+        actionsDiv.appendChild(deleteBtn);
+  
+        if (!wish.purchased) {
+          const purchaseBtn = document.createElement('button');
+          purchaseBtn.className = 'purchase';
+          purchaseBtn.innerText = 'Mark as Purchased';
+          purchaseBtn.addEventListener('click', () => markAsPurchased(wish.id));
+          actionsDiv.appendChild(purchaseBtn);
+        } else {
+          const revertBtn = document.createElement('button');
+          revertBtn.className = 'revert';
+          revertBtn.innerText = 'Revert to Active';
+          revertBtn.addEventListener('click', () => revertPurchase(wish.id));
+          actionsDiv.appendChild(revertBtn);
+        }
+  
+        card.appendChild(actionsDiv);
+        container.appendChild(card);
+      });
+      updateDashboard();
+    }
+  
+    function handleDragStart(e) {
+      dragSrcEl = this;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', this.dataset.id);
+      this.style.opacity = '0.6';
+    }
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+    function handleDrop(e) {
+      e.stopPropagation();
+      const draggedId = e.dataTransfer.getData('text/plain');
+      if (draggedId !== this.dataset.id) {
+        const draggedIndex = wishes.findIndex(w => w.id === draggedId);
+        const targetIndex = wishes.findIndex(w => w.id === this.dataset.id);
+        if (draggedIndex > -1 && targetIndex > -1) {
+          const draggedWish = wishes[draggedIndex];
+          const targetWish = wishes[targetIndex];
+          if (!draggedWish.purchased && !targetWish.purchased) {
+            wishes.splice(draggedIndex, 1);
+            wishes.splice(targetIndex, 0, draggedWish);
+            saveWishes();
+            renderWishes();
+          }
+        }
+      }
+      return false;
+    }
+    function handleDragEnd(e) { this.style.opacity = '1'; }
+  
+    function openWishModal(wish = null) {
+      const modal = document.getElementById('wishModal');
+      modal.classList.add('active');
+      document.getElementById('wishForm').reset();
+      const preview = document.getElementById('photoPreview');
+      preview.style.display = 'none';
+      if (wish) {
+        document.getElementById('modalTitle').innerText = 'Edit Wish';
+        document.getElementById('wishId').value = wish.id;
+        document.getElementById('wishName').value = wish.name;
+        document.getElementById('wishDescription').value = wish.description;
+        document.getElementById('wishLink').value = wish.link;
+        document.getElementById('wishPhoto').value = wish.photo;
+        if (wish.photo) {
+          preview.src = wish.photo;
+          preview.style.display = 'block';
+        }
+        document.getElementById('wishPrice').value = wish.price;
+        document.getElementById('wishSaved').value = wish.saved;
+        document.getElementById('wishMostWanted').checked = wish.mostWanted;
+      } else {
+        document.getElementById('modalTitle').innerText = 'Add Wish';
+        document.getElementById('wishId').value = '';
+      }
+    }
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+  
+    document.getElementById('wishForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const id = document.getElementById('wishId').value;
+      const newWish = {
+        id: id ? id : Date.now().toString(),
+        name: document.getElementById('wishName').value,
+        description: document.getElementById('wishDescription').value,
+        link: document.getElementById('wishLink').value,
+        photo: document.getElementById('wishPhoto').value,
+        price: parseFloat(document.getElementById('wishPrice').value) || 0,
+        saved: parseFloat(document.getElementById('wishSaved').value) || 0,
+        mostWanted: document.getElementById('wishMostWanted').checked,
+        purchased: false
+      };
+      if (id) {
+        wishes = wishes.map(w => w.id === id ? newWish : w);
+        showToast('Wish updated!');
+      } else {
+        wishes.push(newWish);
+        showToast('Wish added!');
+      }
+      saveWishes();
+      renderWishes();
+      closeModal('wishModal');
+    });
+  
+    function deleteWish(id) {
+      wishes = wishes.filter(w => w.id !== id);
+      saveWishes();
+      renderWishes();
+      showToast('Wish deleted!');
+    }
+    function markAsPurchased(id) {
+      wishes = wishes.map(w => w.id === id ? { ...w, purchased: true } : w);
+      saveWishes();
+      renderWishes();
+      showToast('Marked as purchased!');
+    }
+    function revertPurchase(id) {
+      wishes = wishes.map(w => w.id === id ? { ...w, purchased: false } : w);
+      saveWishes();
+      renderWishes();
+      showToast('Reverted to active!');
+    }
+  
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('nav.top-nav ul.tabs li').forEach(li => {
+        li.classList.toggle('active', li.getAttribute('data-tab') === tab);
+      });
+      document.querySelectorAll('nav.bottom-nav button').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+      });
+      renderWishes();
+    }
+    document.querySelectorAll('nav.top-nav ul.tabs li').forEach(tab => {
+      tab.addEventListener('click', function() {
+        switchTab(this.getAttribute('data-tab'));
+      });
+    });
+    document.querySelectorAll('nav.bottom-nav button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        switchTab(this.getAttribute('data-tab'));
+      });
+    });
+  
+    document.getElementById('closeWishModal').addEventListener('click', () => closeModal('wishModal'));
+    document.getElementById('closeImportModal').addEventListener('click', () => closeModal('importModal'));
+    document.getElementById('closeImageModal').addEventListener('click', () => closeModal('imageModal'));
+  
+    document.getElementById('renameBtn').addEventListener('click', () => {
+      document.getElementById('renameForm').reset();
+      document.getElementById('newWishlistName').value = loadWishlistName();
+      document.getElementById('renameModal').classList.add('active');
+    });
+    document.getElementById('closeRenameModal').addEventListener('click', () => closeModal('renameModal'));
+    document.getElementById('renameForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newName = document.getElementById('newWishlistName').value.trim();
+      if(newName) {
+        saveWishlistName(newName);
+        updateWishlistTitle();
+        showToast('Wishlist renamed!');
+        closeModal('renameModal');
+      }
+    });
+  
+    document.getElementById('addWishBtn').addEventListener('click', () => openWishModal());
+  
+    function applyTheme(theme) {
+      theme === 'dark' ? document.body.classList.add('dark') : document.body.classList.remove('dark');
+    }
+    document.getElementById('darkModeToggle').addEventListener('click', () => {
+      const currentTheme = localStorage.getItem(THEME_KEY) || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      localStorage.setItem(THEME_KEY, newTheme);
+      applyTheme(newTheme);
+    });
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+    applyTheme(savedTheme);
+  
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const dataStr = JSON.stringify(wishes, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'wishlist.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('importData').value = '';
+      document.getElementById('importModal').classList.add('active');
+    });
+    document.getElementById('importDataBtn').addEventListener('click', () => {
+      try {
+        const imported = JSON.parse(document.getElementById('importData').value);
+        if (Array.isArray(imported)) {
+          wishes = imported;
+          saveWishes();
+          renderWishes();
+          closeModal('importModal');
+          showToast('Data imported successfully!');
+        } else {
+          showToast('Invalid data format!', 'error');
+        }
+      } catch (e) {
+        showToast('Error parsing JSON data!', 'error');
+      }
+    });
+  
+    document.getElementById('clearPurchasedBtn').addEventListener('click', async () => {
+      if (await customConfirm('Clear all purchased wishes?')) {
+        wishes = wishes.filter(w => !w.purchased);
+        saveWishes();
+        renderWishes();
+        showToast('Purchased wishes cleared!');
+      }
+    });
+    document.getElementById('resetAppBtn').addEventListener('click', async () => {
+      if (await customConfirm('Reset app? All data will be lost!')) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(WISHLIST_NAME_KEY);
+        wishes = [];
+        saveWishes();
+        renderWishes();
+        updateWishlistTitle();
+        showToast('App reset!');
+      }
+    });
+  
+    document.getElementById('wishPhoto').addEventListener('input', function() {
+      const url = this.value.trim();
+      const preview = document.getElementById('photoPreview');
+      if (url) {
+        preview.src = url;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+  
+    function openImageModal(src) {
+      document.getElementById('modalImage').src = src;
+      document.getElementById('imageModal').classList.add('active');
+    }
+  
+    loadWishes();
+    updateWishlistTitle();
+    renderWishes();
+  </script>
+</body>
+</html>
