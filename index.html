@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#1e1e1e" />
-  <title>JP Portfolio | Projects</title>
+  <title>My Projects | JP Portfolio</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png" />
@@ -15,19 +15,14 @@
     :root {
       --primary-bg: linear-gradient(135deg, #1e1e1e, #333);
       --container-bg: rgba(255, 255, 255, 0.08);
+      --section-bg: #121212;
       --text-color: #fff;
       --accent-color: #00FFD5;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       --transition: all 0.3s ease;
+      --header-height: 70px;
     }
-    body.light-mode {
-      --primary-bg: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      --container-bg: rgba(255, 255, 255, 0.9);
-      --text-color: #333;
-    }
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -37,103 +32,176 @@
       background: var(--primary-bg);
       color: var(--text-color);
       min-height: 100vh;
+      line-height: 1.6;
       overflow-x: hidden;
-      transition: background-color 0.5s ease, color 0.5s ease;
+      scroll-behavior: smooth;
+      transition: background 0.5s ease, color 0.5s ease;
     }
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--accent-color);
-      color: #000;
-      padding: 8px 16px;
-      z-index: 1000;
-      transition: top 0.3s ease;
+    a {
+      text-decoration: none;
+      color: var(--accent-color);
+      transition: color var(--transition);
     }
-    .skip-link:focus {
-      top: 0;
+    a:hover, a:focus {
+      color: #fff;
     }
-    canvas#particleCanvas {
+    #particleCanvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
+      z-index: -2;
     }
     header {
-      width: 100%;
-      padding: 20px;
       position: fixed;
       top: 0;
-      left: 0;
-      z-index: 100;
+      width: 100%;
+      height: var(--header-height);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      background: transparent;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
     }
-    header .logo {
+    .logo {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    header .logo img {
+    .logo img {
       width: 50px;
       height: 50px;
       border-radius: 50%;
       object-fit: cover;
     }
-    header .logo h1 {
+    .logo h1 {
       font-size: 1.8em;
       color: var(--text-color);
     }
-    .dark-mode-toggle {
-      background: var(--accent-color);
-      color: #000;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
+    nav.desktop-nav {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      gap: 20px;
+    }
+    nav.desktop-nav a {
+      font-size: 1em;
+      padding: 5px;
+      position: relative;
+    }
+    nav.desktop-nav a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+    nav.desktop-nav a:hover::after,
+    nav.desktop-nav a.active::after {
+      width: 100%;
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
       cursor: pointer;
+      z-index: 110;
+    }
+    .hamburger span {
+      height: 3px;
+      width: 100%;
+      background: var(--text-color);
+      border-radius: 3px;
       transition: var(--transition);
     }
-    .dark-mode-toggle:hover,
-    .dark-mode-toggle:focus {
-      transform: scale(1.1);
-      outline: none;
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 70%;
+      height: 100%;
+      background: var(--section-bg);
+      box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+      transition: right 0.3s ease;
+      z-index: 105;
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--header-height);
     }
-    main {
-      padding-top: 100px;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding-bottom: 60px;
+    .mobile-nav.show {
+      right: 0;
+    }
+    .mobile-nav a {
+      padding: 15px 20px;
+      font-size: 1.2em;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .mobile-nav a:hover, .mobile-nav a:focus {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .mobile-nav .close-btn {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    section {
+      padding: 80px 20px;
+      min-height: 100vh;
+    }
+    .section-bg {
+      background: var(--section-bg);
     }
     .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
-      padding: 60px 20px;
+      padding-top: calc(var(--header-height) + 40px);
+      position: relative;
+      z-index: 1;
     }
     .hero h2 {
-      font-size: 2.5em;
+      font-size: 3em;
       margin-bottom: 20px;
-      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+      text-shadow: 0 3px 6px rgba(0,0,0,0.6);
     }
     .hero p {
       font-size: 1.2em;
       max-width: 800px;
-      margin: 0 auto 30px;
-      line-height: 1.5;
+      margin-bottom: 30px;
     }
-    .search-bar {
-      margin: 20px auto;
+    .hero .scroll-down {
+      font-size: 2em;
+      animation: bounce 2s infinite;
+      margin-top: 20px;
+      color: var(--accent-color);
+      cursor: pointer;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+    .projects {
+      text-align: center;
+    }
+    .projects h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    .projects .search-bar {
       max-width: 500px;
+      margin: 0 auto 30px;
       position: relative;
     }
-    .search-bar input {
+    .projects .search-bar input {
       width: 100%;
       padding: 12px 40px 12px 20px;
       font-size: 1em;
@@ -143,11 +211,12 @@
       background: var(--container-bg);
       color: var(--text-color);
       transition: var(--transition);
+      display: block;
     }
-    .search-bar input:focus {
-      background: rgba(255, 255, 255, 0.2);
+    .projects .search-bar input:focus {
+      background: rgba(255,255,255,0.2);
     }
-    .search-bar .fa-search {
+    .projects .search-bar .fa-search {
       position: absolute;
       right: 15px;
       top: 50%;
@@ -156,9 +225,8 @@
     }
     .project-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
-      padding: 20px;
     }
     .project-card {
       background: var(--container-bg);
@@ -171,26 +239,28 @@
       opacity: 0;
       transform: translateY(20px);
     }
-    .project-card.visible {
+    .project-card.reveal.visible {
       opacity: 1;
       transform: translateY(0);
     }
     .project-card:hover,
     .project-card:focus-within {
       transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.4);
     }
     .project-card img {
       width: 100%;
-      height: 120px;
+      height: 150px;
       object-fit: cover;
       border-radius: 10px;
       margin-bottom: 10px;
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover img {
+      transform: scale(1.05);
     }
     .project-card a {
       display: block;
-      color: var(--accent-color);
-      text-decoration: none;
       font-weight: 600;
       margin-top: 10px;
       white-space: nowrap;
@@ -202,18 +272,115 @@
       font-size: 1.2em;
       margin-top: 20px;
     }
+    .about {
+      padding: 60px 20px;
+    }
+    .about h2 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 40px;
+    }
+    .about-content {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .about-text {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .about-text p {
+      font-size: 1.1em;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .gear {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .gear-group {
+      text-align: left;
+    }
+    .gear-group h3 {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 5px;
+    }
+    .gear-group ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+    .gear-group li {
+      font-size: 1em;
+      margin-bottom: 5px;
+    }
+    .contact {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .contact h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    .contact p {
+      font-size: 1.1em;
+      margin-bottom: 30px;
+    }
+    .contact-form {
+      max-width: 500px;
+      margin: 0 auto 30px;
+      text-align: left;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      background: var(--container-bg);
+      color: var(--text-color);
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: 2px solid var(--accent-color);
+    }
+    .contact-form button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 30px;
+      background: var(--accent-color);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .contact-form button:hover {
+      background: #fff;
+    }
+    .contact-socials {
+      text-align: center;
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+    .contact-socials a {
+      margin: 0 10px;
+      color: var(--accent-color);
+    }
+    .contact-socials a:hover {
+      color: #fff;
+    }
     footer {
       text-align: center;
-      margin-top: 40px;
       padding: 20px;
       font-size: 0.9em;
-      color: rgba(255, 255, 255, 0.8);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      transition: var(--transition);
+      color: rgba(255,255,255,0.8);
+      border-top: 1px solid rgba(255,255,255,0.2);
     }
     footer a {
       color: var(--accent-color);
-      text-decoration: none;
     }
     footer a:hover {
       text-decoration: underline;
@@ -229,8 +396,8 @@
       width: 45px;
       height: 45px;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: var(--transition);
       z-index: 100;
@@ -241,84 +408,41 @@
       opacity: 1;
       pointer-events: auto;
     }
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .reveal {
       opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      z-index: 200;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
-    .modal.show {
+    .reveal.visible {
       opacity: 1;
-      visibility: visible;
-    }
-    .modal-content {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 30px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 500px;
-      position: relative;
-      text-align: left;
-    }
-    .modal-content h2 {
-      margin-bottom: 20px;
-    }
-    .modal-content ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .modal-content ul li {
-      margin: 15px 0;
-      display: flex;
-      align-items: center;
-    }
-    .modal-content ul li i {
-      margin-right: 10px;
-      font-size: 1.3em;
-    }
-    .modal-content ul li a {
-      color: var(--text-color);
-      text-decoration: none;
-    }
-    .modal-content ul li a:hover {
-      color: var(--accent-color);
-    }
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: transparent;
-      border: none;
-      font-size: 1.5em;
-      color: var(--text-color);
-      cursor: pointer;
+      transform: translateY(0);
     }
     @media (max-width: 768px) {
-      header .logo h1 {
-        font-size: 1.5em;
+      nav.desktop-nav {
+        display: none;
       }
-      .project-card {
-        padding: 15px;
+      .hamburger {
+        display: flex;
       }
-      .project-card img {
-        height: 100px;
+      .gear {
+        grid-template-columns: 1fr;
+      }
+      .about-text p, .gear-group li {
+        font-size: 1em;
+      }
+      .hero h2 {
+        font-size: 2.5em;
+      }
+      .hero p {
+        font-size: 1em;
+      }
+      .projects h2, .contact h2, .about h2 {
+        font-size: 2em;
       }
     }
   </style>
 </head>
 <body>
-  <a href="#mainContent" class="skip-link">Skip to Content</a>
-  
   <canvas id="particleCanvas"></canvas>
   
   <header>
@@ -326,99 +450,160 @@
       <img src="/websites/images/Logo.jpg" alt="JP Logo" loading="lazy" />
       <h1>JP Portfolio</h1>
     </div>
-    <button class="dark-mode-toggle" id="themeToggle" aria-label="Toggle Dark/Light Mode">
-      <i class="fas fa-moon"></i>
-    </button>
+    <nav class="desktop-nav" id="navDesktop">
+      <a href="#hero" class="nav-link active">Home</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </header>
   
-  <main id="mainContent">
-    <section class="hero">
-      <h2>My Projects</h2>
-      <p>
-        Welcome to my portfolio! Explore my collection of projects and get a glimpse of my work in web development,
-        design, and more.
-      </p>
-      <div class="search-bar">
-        <input type="text" id="search" placeholder="Search projects..." aria-label="Search Projects" />
-        <i class="fas fa-search"></i>
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="close-btn" id="mobileNavClose"><i class="fas fa-times"></i></div>
+    <a href="#hero" class="nav-link">Home</a>
+    <a href="#projects" class="nav-link">Projects</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </nav>
+  
+  <main id="main">
+    <section class="hero reveal" id="hero">
+      <h2>Welcome to My Portfolio</h2>
+      <p>I'm Jack Palmer - a passionate coder, videographer, and hunter. Explore my work and get in touch!</p>
+      <div class="scroll-down" id="scrollDown" aria-label="Scroll Down">
+        <i class="fas fa-angle-down"></i>
       </div>
     </section>
     
-    <section class="project-section">
-      <div class="project-container" id="projects">
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/ac.png" alt="Age Calculator" loading="lazy" />
-          <a href="/websites/ac" target="_blank" rel="noopener">Age Calculator</a>
+    <section id="projects" class="reveal">
+      <div class="projects">
+        <h2>My Projects</h2>
+        <div class="search-bar">
+          <label for="search" class="sr-only">Search Projects</label>
+          <input type="text" id="search" placeholder="Search projects..." aria-label="Search Projects" />
+          <i class="fas fa-search" aria-hidden="true"></i>
         </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/gtn.png" alt="Guess the Number" loading="lazy" />
-          <a href="/websites/gtn" target="_blank" rel="noopener">Guess the Number</a>
+        <div class="project-container" id="projectContainer">
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/ac.png" alt="Age Calculator" loading="lazy" />
+            <a href="/websites/ac" target="_blank" rel="noopener">Age Calculator</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/gtn.png" alt="Guess the Number" loading="lazy" />
+            <a href="/websites/gtn" target="_blank" rel="noopener">Guess the Number</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/c.png" alt="Calculator" loading="lazy" />
+            <a href="/websites/c" target="_blank" rel="noopener">Calculator</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/cc.png" alt="Currency Converter" loading="lazy" />
+            <a href="/websites/cc" target="_blank" rel="noopener">Currency Converter</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/pac.png" alt="Phonetic Alphabet Converter" loading="lazy" />
+            <a href="/websites/pac" target="_blank" rel="noopener">Phonetic Alphabet Converter</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/tdc.png" alt="Time Duration Calculator" loading="lazy" />
+            <a href="/websites/tdc" target="_blank" rel="noopener">Time Duration Calculator</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/pg.png" alt="Password Generator" loading="lazy" />
+            <a href="/websites/pg" target="_blank" rel="noopener">Password Generator</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/tsc.png" alt="Time Since Calculator" loading="lazy" />
+            <a href="/websites/tsc" target="_blank" rel="noopener">Time Since Calculator</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/td.png" alt="To-Do App" loading="lazy" />
+            <a href="/websites/td" target="_blank" rel="noopener">To-Do App</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/lg.png" alt="Logbook Generator" loading="lazy" />
+            <a href="/websites/lg" target="_blank" rel="noopener">Logbook Generator</a>
+          </article>
+          <article class="project-card reveal" tabindex="0">
+            <img src="/websites/thumbnails/temporary.png" alt="Wishlist Application" loading="lazy" />
+            <a href="/websites/w" target="_blank" rel="noopener">Wishlist Application</a>
+          </article>
         </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/c.png" alt="Calculator" loading="lazy" />
-          <a href="/websites/c" target="_blank" rel="noopener">Calculator</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/cc.png" alt="Currency Converter" loading="lazy" />
-          <a href="/websites/cc" target="_blank" rel="noopener">Currency Converter</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/pac.png" alt="Phonetic Alphabet Converter" loading="lazy" />
-          <a href="/websites/pac" target="_blank" rel="noopener">Phonetic Alphabet Converter</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/tdc.png" alt="Time Duration Calculator" loading="lazy" />
-          <a href="/websites/tdc" target="_blank" rel="noopener">Time Duration Calculator</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/pg.png" alt="Password Generator" loading="lazy" />
-          <a href="/websites/pg" target="_blank" rel="noopener">Password Generator</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/tsc.png" alt="Time Since Calculator" loading="lazy" />
-          <a href="/websites/tsc" target="_blank" rel="noopener">Time Since Calculator</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/td.png" alt="To-Do App" loading="lazy" />
-          <a href="/websites/td" target="_blank" rel="noopener">To-Do App</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/lg.png" alt="Logbook Generator" loading="lazy" />
-          <a href="/websites/lg" target="_blank" rel="noopener">Logbook Generator</a>
-        </div>
-        <div class="project-card" tabindex="0">
-          <img src="/websites/thumbnails/temporary.png" alt="Wishlist Application" loading="lazy" />
-          <a href="/websites/w" target="_blank" rel="noopener">Wishlist Application</a>
+        <p class="no-results" id="noResults" style="display: none;">No results found.</p>
+      </div>
+    </section>
+    
+    <section id="about" class="reveal">
+      <div class="about">
+        <h2>About Me &amp; My Gear</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              I'm Jack Palmer, a keen coder, videographer, and hunter. I build website applications and capture moments through photography and videography.
+              Below you'll find an overview of the gear I use.
+            </p>
+          </div>
+          <div class="gear">
+            <div class="gear-group">
+              <h3>Coding Gear</h3>
+              <ul>
+                <li>Microsoft Surface Laptop 5</li>
+                <li>MacBook Air (coming soon)</li>
+                <li>Acer Swift 5</li>
+              </ul>
+            </div>
+            <div class="gear-group">
+              <h3>Creative Gear</h3>
+              <ul>
+                <li>Canon EOS R100 (Camera)</li>
+                <li>DJI Air 3S (Drone)</li>
+                <li>DJI Mini 4 Pro (Drone)</li>
+                <li>DJI Mini 2 SE (Drone)</li>
+                <li>DJI OSMO Mobile 6 (Gimbal)</li>
+                <li>iPhone 16 Pro (Mobile Filming)</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="no-results" id="noResults" style="display: none;">
-        No results found.
+    </section>
+    
+    <section id="contact" class="reveal">
+      <div class="contact">
+        <h2>Get in Touch</h2>
+        <p>Whether you'd like to give me feedback/suggestions or just say hi, feel free to drop me a message!</p>
+        <div class="contact-form">
+          <form id="contactForm" action="https://formspree.io/f/mgegewel" method="POST">
+            <input type="text" name="name" id="name" placeholder="Your Name" required />
+            <input type="email" name="_replyto" id="email" placeholder="Your Email" required />
+            <textarea name="message" id="message" rows="4" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
+        <div class="contact-socials">
+          <a href="https://nzaviation.github.io/websites" target="_blank" rel="noopener"><i class="fas fa-globe"></i></a>
+          <a href="https://github.com/nzaviation" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+          <a href="https://instagram.com/nz__aviation1" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+          <a href="https://tiktok.com/@nz__aviation" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+          <a href="https://tiktok.com/@annerparkfarm" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+          <a href="https://snapchat.com/add/jackpalme2021" target="_blank" rel="noopener"><i class="fab fa-snapchat"></i></a>
+        </div>
       </div>
     </section>
   </main>
   
   <footer>
-    <a href="/websites/patch-notes">Websites Patch Notes</a>
-    <div style="margin: 10px 0;" class="section-separator"></div>
-    &copy; 2022 - <span id="year"></span> <a href="#" id="contactLink">Jack Palmer</a>. All rights reserved.
+    <p>&copy; 2022 - <span id="year"></span> Jack Palmer. All rights reserved.</p>
+    <p>
+      <a href="/websites/patch-notes">Websites Patch Notes</a> &middot; 
+      <a href="#contact">Contact</a>
+    </p>
   </footer>
-  
-  <div class="modal" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
-    <div class="modal-content">
-      <button class="modal-close" id="closeModal" aria-label="Close Contact Modal">
-        <i class="fas fa-times"></i>
-      </button>
-      <h2 id="contactTitle">Contact Details</h2>
-      <ul>
-        <li><i class="fas fa-envelope"></i><span>Email: jackpalmer232@gmail.com</span></li>
-        <li><i class="fas fa-globe"></i><span><a href="https://nzaviation.github.io/websites" target="_blank" rel="noopener">Website</a></span></li>
-        <li><i class="fab fa-tiktok"></i><span><a href="https://tiktok.com/@nz__aviation" target="_blank" rel="noopener">TikTok</a></span></li>
-        <li><i class="fab fa-snapchat"></i><span><a href="https://snapchat.com/add/jackpalme2021" target="_blank" rel="noopener">Snapchat</a></span></li>
-        <li><i class="fab fa-instagram"></i><span><a href="https://instagram.com/nz__aviation1" target="_blank" rel="noopener">Instagram</a></span></li>
-        <li><i class="fab fa-github"></i><span><a href="https://github.com/nzaviation" target="_blank" rel="noopener">GitHub</a></span></li>
-      </ul>
-    </div>
-  </div>
   
   <button class="back-to-top" id="backToTop" aria-label="Back to Top">
     <i class="fas fa-arrow-up"></i>
@@ -427,14 +612,13 @@
   <script>
     const canvas = document.getElementById('particleCanvas');
     const ctx = canvas.getContext('2d');
-    let particlesArray;
+    let particles = [];
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       initParticles();
     }
     window.addEventListener('resize', resizeCanvas);
-    
     class Particle {
       constructor(x, y, size, color, weight) {
         this.x = x;
@@ -460,41 +644,62 @@
         }
       }
     }
-    
     function initParticles() {
-      particlesArray = [];
-      const numberOfParticles = Math.floor(canvas.width * canvas.height / 9000);
-      for (let i = 0; i < numberOfParticles; i++) {
+      particles = [];
+      const numParticles = Math.floor(canvas.width * canvas.height / 9000);
+      for (let i = 0; i < numParticles; i++) {
         const size = Math.random() * 3 + 1;
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
         const color = 'rgba(255,255,255,0.8)';
         const weight = 1;
-        particlesArray.push(new Particle(x, y, size, color, weight));
+        particles.push(new Particle(x, y, size, color, weight));
       }
     }
-    
     function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesArray.forEach(particle => {
-        particle.update();
-        particle.draw();
+      particles.forEach(p => {
+        p.update();
+        p.draw();
       });
       requestAnimationFrame(animateParticles);
     }
-    
     resizeCanvas();
     animateParticles();
     
-    document.getElementById('year').textContent = new Date().getFullYear();
+    const revealElements = document.querySelectorAll('.reveal');
+    const observerOptions = { threshold: 0.2 };
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    revealElements.forEach(el => revealObserver.observe(el));
+    
+    document.getElementById('scrollDown').addEventListener('click', () => {
+      document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    function updateNav() {
+      const fromTop = window.scrollY + 80;
+      navLinks.forEach(link => {
+        const section = document.querySelector(link.getAttribute('href'));
+        if(section.offsetTop <= fromTop && section.offsetTop + section.offsetHeight > fromTop) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+    window.addEventListener('scroll', updateNav);
     
     const backToTopButton = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTopButton.classList.add('show');
-      } else {
-        backToTopButton.classList.remove('show');
-      }
+      backToTopButton.classList.toggle('show', window.scrollY > 300);
     });
     backToTopButton.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -503,13 +708,12 @@
     const searchInput = document.getElementById('search');
     const projectCards = document.querySelectorAll('.project-card');
     const noResultsMessage = document.getElementById('noResults');
-    
-    searchInput.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
+    searchInput.addEventListener('input', e => {
+      const term = e.target.value.toLowerCase();
       let matches = 0;
       projectCards.forEach(card => {
         const title = card.querySelector('a').textContent.toLowerCase();
-        if (title.includes(searchTerm)) {
+        if (title.includes(term)) {
           card.style.display = 'block';
           matches++;
         } else {
@@ -519,57 +723,22 @@
       noResultsMessage.style.display = matches === 0 ? 'block' : 'none';
     });
     
-    const observerOptions = {
-      threshold: 0.1
-    };
-    const observer = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.add('show');
+    });
+    mobileNavClose.addEventListener('click', () => {
+      mobileNav.classList.remove('show');
+    });
+    document.querySelectorAll('.mobile-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('show');
       });
-    }, observerOptions);
-    projectCards.forEach(card => observer.observe(card));
-    
-    const contactLink = document.getElementById('contactLink');
-    const contactModal = document.getElementById('contactModal');
-    const closeModal = document.getElementById('closeModal');
-    
-    contactLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      contactModal.classList.add('show');
-      contactModal.querySelector('.modal-content').focus();
-    });
-    closeModal.addEventListener('click', () => {
-      contactModal.classList.remove('show');
-    });
-    window.addEventListener('click', (e) => {
-      if (e.target === contactModal) {
-        contactModal.classList.remove('show');
-      }
-    });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && contactModal.classList.contains('show')) {
-        contactModal.classList.remove('show');
-      }
     });
     
-    const themeToggle = document.getElementById('themeToggle');
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light-mode');
-      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-    }
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      if (document.body.classList.contains('light-mode')) {
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        localStorage.setItem('theme', 'light');
-      } else {
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        localStorage.setItem('theme', 'dark');
-      }
-    });
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
