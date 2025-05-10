@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timesheet Calculator | JP Portfolio</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/websites/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/websites/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/websites/images/favicon-16x16.png">
+  <link rel="manifest" href="/websites/manifest.json">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background-color: rgba(100,100,100,0.3); border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen transition-colors flex flex-col items-center py-8">
+
+  <header class="w-full max-w-4xl mb-8 text-center">
+    <h1 class="text-6xl font-extrabold text-indigo-600 dark:text-indigo-400 mb-2 transform hover:scale-105 transition">Timesheet Calculator</h1>
+    <p class="text-gray-600 dark:text-gray-300">Simple timesheet calculator with instant summaries and full control</p>
+  </header>
+
+  <section class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-3xl shadow-lg dark:shadow-gray-700 p-8 mb-8 transition-colors">
+    <form id="entryForm" class="space-y-6 text-gray-900 dark:text-gray-100">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="flex flex-col">
+          <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Date</label>
+          <input type="date" id="date" name="date" class="mt-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-indigo-500 dark:text-gray-100" required>
+        </div>
+      </div>
+      <div id="slotsContainer" class="space-y-4"></div>
+      <div class="flex space-x-4">
+        <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 transition">Save Entry</button>
+        <button id="addSlotBtn" type="button" class="flex items-center space-x-1 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200 disabled:opacity-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg><span>Add slot</span>
+        </button>
+        <button id="removeSlotBtn" type="button" disabled class="flex items-center space-x-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 disabled:opacity-50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg><span>Remove slot</span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-3xl shadow-lg dark:shadow-gray-700 overflow-auto transition-colors">
+    <table class="w-full text-left text-gray-900 dark:text-gray-100 border-separate" style="border-spacing: 0;">
+      <thead class="sticky top-0 bg-indigo-100 dark:bg-gray-700">
+        <tr class="text-sm text-gray-600 dark:text-gray-300 uppercase">
+          <th class="px-5 py-3">Date</th>
+          <th class="px-5 py-3">Start 1</th>
+          <th class="px-5 py-3">Finish 1</th>
+          <th class="px-5 py-3">Start 2</th>
+          <th class="px-5 py-3">Finish 2</th>
+          <th class="px-5 py-3">Start 3</th>
+          <th class="px-5 py-3">Finish 3</th>
+          <th class="px-5 py-3">Total</th>
+          <th class="px-5 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="entriesTable" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+      <tfoot class="bg-indigo-50 dark:bg-gray-700 font-semibold text-gray-700 dark:text-gray-200">
+        <tr>
+          <td class="px-5 py-3">Grand Total</td>
+          <td colspan="6"></td>
+          <td id="grandTotal" class="px-5 py-3">0.00</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <br><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+    Hint: On mobile, swipe left/right on the table to see all columns.
+  </p>
+  
+
+  <script>
+    const maxSlots = 3;
+    let slotCount = 0;
+    let entries = JSON.parse(localStorage.getItem('timesheetEntries') || '[]');
+    const form = document.getElementById('entryForm');
+    const slotsContainer = document.getElementById('slotsContainer');
+    const addSlotBtn = document.getElementById('addSlotBtn');
+    const removeSlotBtn = document.getElementById('removeSlotBtn');
+    const tableBody = document.getElementById('entriesTable');
+    const grandTotalCell = document.getElementById('grandTotal');
+    let editingIndex = -1;
+
+    function saveEntries() {
+      localStorage.setItem('timesheetEntries', JSON.stringify(entries));
+    }
+
+    function updateGrandTotal() {
+      const sum = entries.reduce((acc,e)=> acc + parseFloat(e.total), 0);
+      grandTotalCell.textContent = sum.toFixed(2);
+    }
+
+    function renderEntries() {
+      tableBody.innerHTML = '';
+      entries.forEach((e, idx) => {
+        const tr = document.createElement('tr');
+        tr.dataset.index = idx;
+        tr.className = 'hover:bg-indigo-50 dark:hover:bg-gray-700 transition';
+        tr.dataset.total = e.total;
+        let cells = `<td class=\"px-5 py-3\">${e.date}</td>`;
+        for (let i = 0; i < maxSlots; i++) {
+          const t = e.times[i] || { s: '-', f: '-' };
+          cells += `<td class=\"px-5 py-3\">${t.s}</td><td class=\"px-5 py-3\">${t.f}</td>`;
+        }
+        cells += `<td class=\"px-5 py-3 font-semibold\">${e.total}</td>`;
+        cells += `<td class=\"px-5 py-3 space-x-2\">
+            <button data-action=\"delete\" class=\"px-2 py-1 rounded-md text-sm font-medium bg-red-100 text-red-600 hover:bg-red-200\">Delete</button>
+            <button data-action=\"edit\" class=\"px-2 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-600 hover:bg-blue-200\">Edit</button>
+          </td>`;
+        tr.innerHTML = cells;
+        tableBody.appendChild(tr);
+      });
+      updateGrandTotal();
+    }
+
+    function toggleSlotButtons() {
+      addSlotBtn.disabled = slotCount >= maxSlots;
+      removeSlotBtn.disabled = slotCount <= 1;
+    }
+
+    function addSlot() {
+      slotCount++;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex items-end space-x-4';
+      wrapper.dataset.index = slotCount;
+      wrapper.innerHTML = `
+        <div class=\"flex flex-col w-1/2\">
+          <label class=\"text-sm font-semibold text-gray-700 dark:text-gray-300\">Start ${slotCount}</label>
+          <input type=\"time\" name=\"start${slotCount}\" class=\"mt-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-indigo-500 dark:text-gray-100\" required>
+        </div>
+        <div class=\"flex flex-col w-1/2\">
+          <label class=\"text-sm font-semibold text-gray-700 dark:text-gray-300\">Finish ${slotCount}</label>
+          <input type=\"time\" name=\"finish${slotCount}\" class=\"mt-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-indigo-500 dark:text-gray-100\" required>
+        </div>`;
+      slotsContainer.appendChild(wrapper);
+      toggleSlotButtons();
+    }
+
+    addSlotBtn.addEventListener('click', addSlot);
+    removeSlotBtn.addEventListener('click', () => {
+      if (slotCount <= 1) return;
+      slotsContainer.lastElementChild.remove();
+      slotCount--;
+      toggleSlotButtons();
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const date = fd.get('date');
+      let total = 0;
+      const times = [];
+      for (let i = 1; i <= slotCount; i++) {
+        const s = fd.get(`start${i}`) || '';
+        const f = fd.get(`finish${i}`) || '';
+        times.push({ s, f });
+        if (s && f) total += (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${s}`)) / 36e5;
+      }
+      const entry = { date, times, total: total.toFixed(2) };
+      if (editingIndex >= 0) entries[editingIndex] = entry;
+      else entries.push(entry);
+      saveEntries(); renderEntries();
+      editingIndex = -1;
+      form.reset();
+      while (slotCount > 0) { slotsContainer.lastChild.remove(); slotCount--; }
+      addSlot();
+    });
+
+    tableBody.addEventListener('click', e => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      const tr = btn.closest('tr'); const idx = +tr.dataset.index;
+      if (btn.dataset.action === 'delete') {
+        entries.splice(idx, 1); saveEntries(); renderEntries();
+      }
+      if (btn.dataset.action === 'edit') {
+        const entry = entries[idx]; editingIndex = idx;
+        form.date.value = entry.date;
+        while (slotCount > 0) { slotsContainer.lastChild.remove(); slotCount--; }
+        entry.times.forEach((t, i) => addSlot());
+        entry.times.forEach((t, i) => {
+          form[`start${i+1}`].value = t.s;
+          form[`finish${i+1}`].value = t.f;
+        });
+      }
+    });
+
+    addSlot(); renderEntries();
+  </script>
+</body>
+</html>
